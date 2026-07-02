@@ -1,0 +1,9 @@
+{
+  "name": "analyzefat",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
