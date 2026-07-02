@@ -2,6 +2,7 @@ import React, { useContext, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { getCurrentRankInfo, svgTrophy, svgFlame, svgCalendar, svgTrending, svgScale, svgLock, svgCheck, svgAlert, getConsistencyStats, getUnlockedBadges, getWeeklyMuscleBalance, getWeeklyTonnage, getRelativeStrengthStatus, getHypertrophyZoneInfo, generateWorkoutSummary, getMonthlyVolumeTimeline } from '../data';
 import Icon from './Icon';
+import AnimatedCounter from './AnimatedCounter';
 
 const Profile = ({ onLogout }) => {
     const { userData, syncData, showNotification, activeSession, sessionElapsed } = useContext(AuthContext);
@@ -124,20 +125,20 @@ const Profile = ({ onLogout }) => {
             <div className="stats-grid">
                 <div className="stat-card">
                     <div className="stat-label">Treinos Concluídos</div>
-                    <div className="stat-val" id="profile-workouts">{userData?.workouts || 0}</div>
+                    <div className="stat-val" id="profile-workouts"><AnimatedCounter value={userData?.workouts || 0} /></div>
                 </div>
                 <div className="stat-card">
                     <div className="stat-label">Experiência (XP)</div>
-                    <div className="stat-val" id="profile-xp">{xp}</div>
+                    <div className="stat-val" id="profile-xp"><AnimatedCounter value={xp} /></div>
                 </div>
                 <div className="stat-card">
                     <div className="stat-label">Recordes (PRs)</div>
-                    <div className="stat-val" id="profile-prs">{totalPRs}</div>
+                    <div className="stat-val" id="profile-prs"><AnimatedCounter value={totalPRs} /></div>
                 </div>
                 <div className="stat-card">
                     <div className="stat-label">Sequência Atual</div>
                     <div className="stat-val" style={{ color: consistency.streak > 0 ? 'var(--text-main)' : 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <Icon svg={svgFlame} color="#d4af37" size={20} /> {consistency.streak} <span style={{ fontSize: '0.8rem', fontWeight: '400' }}>dias</span>
+                        <Icon svg={svgFlame} color="#d4af37" size={20} /> <AnimatedCounter value={consistency.streak} /> <span style={{ fontSize: '0.8rem', fontWeight: '400' }}>dias</span>
                     </div>
                 </div>
             </div>
@@ -214,28 +215,23 @@ const Profile = ({ onLogout }) => {
                     gap: '5px' 
                 }}>
                     {(consistency.last60Days || consistency.last30Days).map((day, idx) => {
-                        let bg = 'rgba(255, 255, 255, 0.04)';
-                        let border = 'var(--border)';
-                        if (day.count >= 10) {
-                            bg = '#d4af37';
-                            border = '#d4af37';
-                        } else if (day.count >= 5) {
-                            bg = '#a1a1aa';
-                            border = '#a1a1aa';
-                        } else if (day.hasWorkout) {
-                            bg = '#52525b';
-                            border = '#71717a';
+                        let cellClass = 'heatmap-cell-0';
+                        if (day.count >= 8) {
+                            cellClass = 'heatmap-cell-3';
+                        } else if (day.count >= 4) {
+                            cellClass = 'heatmap-cell-2';
+                        } else if (day.hasWorkout || day.count >= 1) {
+                            cellClass = 'heatmap-cell-1';
                         }
                         return (
                             <div 
                                 key={idx} 
-                                className="day-square"
+                                className={`day-square ${cellClass}`}
                                 title={`${day.dayLabel}: ${day.count > 0 ? `${day.count} séries registradas` : 'Sem treino'}`}
                                 style={{
                                     aspectRatio: '1',
                                     borderRadius: '3px',
-                                    background: bg,
-                                    border: `1px solid ${border}`,
+                                    border: '1px solid var(--border)',
                                     transition: 'all 0.15s ease'
                                 }}
                             />
@@ -246,10 +242,10 @@ const Profile = ({ onLogout }) => {
                     <span>60 dias atrás</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <span>Menos</span>
-                        <div style={{ width: '10px', height: '10px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid var(--border)', borderRadius: '2px' }} />
-                        <div style={{ width: '10px', height: '10px', background: '#52525b', borderRadius: '2px' }} />
-                        <div style={{ width: '10px', height: '10px', background: '#a1a1aa', borderRadius: '2px' }} />
-                        <div style={{ width: '10px', height: '10px', background: '#d4af37', borderRadius: '2px' }} />
+                        <div className="heatmap-cell-0" style={{ width: '10px', height: '10px', borderRadius: '2px', border: '1px solid var(--border)' }} />
+                        <div className="heatmap-cell-1" style={{ width: '10px', height: '10px', borderRadius: '2px' }} />
+                        <div className="heatmap-cell-2" style={{ width: '10px', height: '10px', borderRadius: '2px' }} />
+                        <div className="heatmap-cell-3" style={{ width: '10px', height: '10px', borderRadius: '2px' }} />
                         <span>Mais</span>
                     </div>
                     <span>Hoje</span>
@@ -268,6 +264,45 @@ const Profile = ({ onLogout }) => {
                         </p>
                     </div>
                 </div>
+
+                {/* GRÁFICO DE ÁREA SVG (CURVA DE FORÇA) */}
+                {(() => {
+                    const maxKg = Math.max(...monthlyTimeline.map(w => w.totalKg), 100);
+                    const points = monthlyTimeline.map((w, i) => {
+                        const x = i * 90 + 15;
+                        const y = 65 - (w.totalKg / maxKg) * 50;
+                        return { x, y, ...w };
+                    });
+                    const polylineStr = points.map(p => `${p.x},${p.y}`).join(' ');
+                    const areaStr = `15,65 ${polylineStr} 285,65`;
+
+                    return (
+                        <div style={{ background: 'rgba(0,0,0,0.3)', padding: '16px 12px 6px', borderRadius: '10px', border: '1px solid var(--border)', marginBottom: '16px' }}>
+                            <svg width="100%" height="80" viewBox="0 0 300 80" style={{ overflow: 'visible' }}>
+                                <defs>
+                                    <linearGradient id="goldArea" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="#d4af37" stopOpacity="0.35" />
+                                        <stop offset="100%" stopColor="#d4af37" stopOpacity="0.0" />
+                                    </linearGradient>
+                                </defs>
+                                <line x1="15" y1="15" x2="285" y2="15" stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
+                                <line x1="15" y1="40" x2="285" y2="40" stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
+                                <line x1="15" y1="65" x2="285" y2="65" stroke="rgba(255,255,255,0.1)" />
+                                
+                                <polygon points={areaStr} fill="url(#goldArea)" />
+                                <polyline points={polylineStr} fill="none" stroke="#d4af37" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                
+                                {points.map((p, idx) => (
+                                    <g key={idx}>
+                                        <circle cx={p.x} cy={p.y} r={p.isPeak ? 5 : 3.5} fill={p.isPeak ? '#d4af37' : '#fff'} stroke="#000" strokeWidth="1.5" />
+                                        {p.isPeak && <circle cx={p.x} cy={p.y} r={9} fill="none" stroke="#d4af37" strokeWidth="1" strokeOpacity="0.5" />}
+                                    </g>
+                                ))}
+                            </svg>
+                        </div>
+                    );
+                })()}
+
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {monthlyTimeline.map((w, idx) => (
                         <div key={idx}>
