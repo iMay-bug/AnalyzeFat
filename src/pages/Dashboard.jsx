@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { svgMoon, svgSun, getConsistencyStats, formatElapsed } from '../data';
+import { svgMoon, svgSun, svgActivity, svgClock, svgStop, getConsistencyStats, formatElapsed } from '../data';
+import Icon from '../components/Icon';
 
 import Path from '../components/Path';
 import Roadmap from '../components/Roadmap';
@@ -110,11 +111,11 @@ const Dashboard = () => {
                         style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
                         title="Clique para abrir sua sessão"
                     >
-                        <span style={{ fontSize: '1rem' }}>🟢</span>
+                        <Icon svg={svgActivity} color="#10b981" size={16} />
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <strong style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontFamily: 'monospace' }}>
-                                    ⏱️ {formatElapsed(sessionElapsed)}
+                                <strong style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <Icon svg={svgClock} color="#d4af37" size={14} /> {formatElapsed(sessionElapsed)}
                                 </strong>
                                 {restTimer && restTimer.active && (
                                     <span style={{ background: '#d4af37', color: '#000', padding: '1px 6px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: '800' }}>
@@ -143,7 +144,7 @@ const Dashboard = () => {
                             onClick={endSession}
                             title="Encerrar treino"
                         >
-                            ⏹️
+                            <Icon svg={svgStop} color="#ef4444" size={14} />
                         </button>
                     </div>
                 </div>

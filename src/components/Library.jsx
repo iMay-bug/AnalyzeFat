@@ -1,6 +1,7 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { exercisesDB, formatElapsed, calculate1RM, getExerciseHistory, calculatePlates, getExerciseRoutineGroup, getWeeklyTonnage } from '../data';
+import { exercisesDB, formatElapsed, calculate1RM, getExerciseHistory, calculatePlates, getExerciseRoutineGroup, getWeeklyTonnage, svgLightning, svgBox, svgSearch } from '../data';
+import Icon from './Icon';
 
 const Library = () => {
     const { userData, syncData, showRewardModal, showNotification, activeSession, startSession, endSession, logToSession, restTimer, startRestTimer, stopRestTimer, sessionElapsed } = useContext(AuthContext);
@@ -337,10 +338,10 @@ const Library = () => {
                         style={{ padding: '8px 14px', fontSize: '0.8rem', width: 'auto', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px', background: '#d4af37', color: '#000', fontWeight: '800' }}
                         onClick={() => setShowCustomModal(true)}
                     >
-                        ➕ Criar Meu Exercício
+                        + Criar Meu Exercício
                     </button>
-                    <div className="search-input-container">
-                        <span className="search-icon">🔍</span>
+                    <div className="search-input-container" style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+                        <span className="search-icon" style={{ position: 'absolute', left: '10px', display: 'flex', alignItems: 'center' }}><Icon svg={svgSearch} color="var(--text-muted)" size={14} /></span>
                         <input 
                             type="text" 
                             placeholder="Buscar exercício ou grupo..." 
@@ -486,7 +487,13 @@ const Library = () => {
                                                 }}>
                                                     {(() => {
                                                         const rGroup = getExerciseRoutineGroup(ex, ex.id, userData?.routineMap);
-                                                        return rGroup === 'A' ? '🔴 Treino A' : rGroup === 'B' ? '🔵 Treino B' : rGroup === 'C' ? '🟢 Treino C' : '🟡 Treino D';
+                                                        const dotColor = rGroup === 'A' ? '#ef4444' : rGroup === 'B' ? '#3b82f6' : rGroup === 'C' ? '#10b981' : '#f59e0b';
+                                                        return (
+                                                            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                                <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: dotColor }}></span>
+                                                                Treino {rGroup}
+                                                            </span>
+                                                        );
                                                     })()}
                                                 </span>
                                                 {best1RM > 0 && (
@@ -502,7 +509,7 @@ const Library = () => {
                                                         alignItems: 'center',
                                                         gap: '4px'
                                                     }}>
-                                                        ⚡ 1RM: {best1RM}kg
+                                                    <Icon svg={svgLightning} color="#d4af37" size={14} /> 1RM: {best1RM}kg
                                                     </span>
                                                 )}
                                                 {exSets.length > 0 && (
@@ -512,10 +519,12 @@ const Library = () => {
                                                         color: '#10b981', 
                                                         padding: '2px 8px', 
                                                         borderRadius: '6px', 
-                                                        fontSize: '0.7rem', 
-                                                        fontWeight: '700'
+                                                        fontWeight: '700',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '4px'
                                                     }}>
-                                                        📦 {exSets.length} {exSets.length === 1 ? 'série' : 'séries'}
+                                                        <Icon svg={svgBox} color="#10b981" size={14} /> {exSets.length} {exSets.length === 1 ? 'série' : 'séries'}
                                                     </span>
                                                 )}
                                             </div>

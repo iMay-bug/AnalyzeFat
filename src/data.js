@@ -12,6 +12,19 @@ export const svgDumbbell = `<svg width="20" height="20" viewBox="0 0 24 24" fill
 export const svgBiceps = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"></path></svg>`;
 export const svgFlame = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>`;
 export const svgLightning = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
+export const svgClock = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
+export const svgCalendar = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`;
+export const svgTrending = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`;
+export const svgScale = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"></path><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>`;
+export const svgBox = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>`;
+export const svgTarget = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>`;
+export const svgLock = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
+export const svgSearch = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`;
+export const svgStop = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 2px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>`;
+export const svgActivity = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>`;
+export const svgCheck = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+export const svgAlert = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+export const svgWeight = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>`;
 
 // FORMATADOR DE TEMPO DE SESSÃO EM TEMPO REAL
 export const formatElapsed = (totalSeconds) => {
@@ -271,13 +284,13 @@ export const getConsistencyStats = (feed = []) => {
 
 // SISTEMA DE INSÍGNIAS DE CONQUISTAS ESPORTIVAS (BADGES)
 export const badgesDB = [
-    { id: "batismo", name: "Batismo de Fogo", desc: "Registrou sua primeira série na Liga do Ferro.", icon: "🔥" },
-    { id: "clube100", name: "Clube dos 100kg", desc: "Levantou 100kg ou mais em qualquer exercício.", icon: "🦾" },
-    { id: "constante", name: "Imparável", desc: "Atingiu uma consistência de 5 dias treinados na mesma semana ou 5 dias seguidos.", icon: "🛡️" },
-    { id: "rei_pr", name: "Rei do PR", desc: "Conquistou 5 ou mais Recordes Pessoais (PRs).", icon: "👑" },
-    { id: "madrugador", name: "Madrugador", desc: "Registrou uma série de treino antes das 07h00 da manhã.", icon: "☀️" },
-    { id: "coruja", name: "Coruja de Ferro", desc: "Registrou uma série de treino após as 22h00 da noite.", icon: "🦉" },
-    { id: "centuriao", name: "Centurião", desc: "Completou 100 séries de musculação registradas no aplicativo.", icon: "💯" }
+    { id: "batismo", name: "Batismo de Fogo", desc: "Registrou sua primeira série na Liga do Ferro.", icon: svgFlame },
+    { id: "clube100", name: "Clube dos 100kg", desc: "Levantou 100kg ou mais em qualquer exercício.", icon: svgDumbbell },
+    { id: "constante", name: "Imparável", desc: "Atingiu uma consistência de 5 dias treinados na mesma semana ou 5 dias seguidos.", icon: svgShield },
+    { id: "rei_pr", name: "Rei do PR", desc: "Conquistou 5 ou mais Recordes Pessoais (PRs).", icon: svgCrown },
+    { id: "madrugador", name: "Madrugador", desc: "Registrou uma série de treino antes das 07h00 da manhã.", icon: svgSun },
+    { id: "coruja", name: "Coruja de Ferro", desc: "Registrou uma série de treino após as 22h00 da noite.", icon: svgMoon },
+    { id: "centuriao", name: "Centurião", desc: "Completou 100 séries de musculação registradas no aplicativo.", icon: svgDiamond }
 ];
 
 export const getUnlockedBadges = (userData) => {

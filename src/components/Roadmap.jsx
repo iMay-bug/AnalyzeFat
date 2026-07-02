@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { ranks, getCurrentRankInfo } from '../data';
+import { ranks, getCurrentRankInfo, svgCheck, svgLightning, svgLock } from '../data';
+import Icon from './Icon';
 
 const Roadmap = () => {
     const { userData } = useContext(AuthContext);
@@ -28,8 +29,8 @@ const Roadmap = () => {
                             Próxima meta: <strong style={{ color: 'var(--text-main)' }}>{nextRank.name}</strong> • faltam <strong>{xpToNext} XP</strong>
                         </span>
                     ) : (
-                        <span style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: '600' }}>
-                            ✓ Nível Máximo Alcançado
+                        <span style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Icon svg={svgCheck} color="#10b981" size={16} /> Nível Máximo Alcançado
                         </span>
                     )}
                 </div>
@@ -63,11 +64,11 @@ const Roadmap = () => {
                         >
                             <div className="roadmap-node" title={isCurrent ? "Rank Atual" : isUnlocked ? "Conquistado" : "Bloqueado"}>
                                 {isCurrent ? (
-                                    <span style={{ fontSize: '0.9rem', fontWeight: '800' }}>⚡</span>
+                                    <Icon svg={svgLightning} color="#000" size={14} />
                                 ) : isUnlocked ? (
-                                    <span style={{ fontSize: '0.85rem', fontWeight: '700' }}>✓</span>
+                                    <Icon svg={svgCheck} color="var(--bg-main)" size={14} />
                                 ) : (
-                                    <span style={{ fontSize: '0.75rem', opacity: 0.6 }}>🔒</span>
+                                    <Icon svg={svgLock} color="var(--text-muted)" size={12} />
                                 )}
                             </div>
                             

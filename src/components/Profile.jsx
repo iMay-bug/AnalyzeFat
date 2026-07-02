@@ -1,6 +1,7 @@
 import React, { useContext, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { getCurrentRankInfo, svgTrophy, getConsistencyStats, getUnlockedBadges, getWeeklyMuscleBalance, getWeeklyTonnage, getRelativeStrengthStatus, getHypertrophyZoneInfo, generateWorkoutSummary, getMonthlyVolumeTimeline } from '../data';
+import { getCurrentRankInfo, svgTrophy, svgFlame, svgCalendar, svgTrending, svgScale, svgLock, svgCheck, svgAlert, getConsistencyStats, getUnlockedBadges, getWeeklyMuscleBalance, getWeeklyTonnage, getRelativeStrengthStatus, getHypertrophyZoneInfo, generateWorkoutSummary, getMonthlyVolumeTimeline } from '../data';
+import Icon from './Icon';
 
 const Profile = ({ onLogout }) => {
     const { userData, syncData, showNotification, activeSession, sessionElapsed } = useContext(AuthContext);
@@ -135,8 +136,8 @@ const Profile = ({ onLogout }) => {
                 </div>
                 <div className="stat-card">
                     <div className="stat-label">Sequência Atual</div>
-                    <div className="stat-val" style={{ color: consistency.streak > 0 ? 'var(--text-main)' : 'var(--text-muted)' }}>
-                        🔥 {consistency.streak} <span style={{ fontSize: '0.8rem', fontWeight: '400' }}>dias</span>
+                    <div className="stat-val" style={{ color: consistency.streak > 0 ? 'var(--text-main)' : 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Icon svg={svgFlame} color="#d4af37" size={20} /> {consistency.streak} <span style={{ fontSize: '0.8rem', fontWeight: '400' }}>dias</span>
                     </div>
                 </div>
             </div>
@@ -144,8 +145,8 @@ const Profile = ({ onLogout }) => {
             <div className="relative-strength-section" style={{ marginTop: '32px', background: 'var(--bg-card)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
                     <div>
-                        <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-main)', margin: 0 }}>
-                            ⚖️ Padrão Esportivo de Força Relativa
+                        <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-main)', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Icon svg={svgScale} color="#d4af37" size={18} /> Padrão Esportivo de Força Relativa
                         </h3>
                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '4px 0 0 0' }}>
                             Classificação de elite baseada em: Carga Máxima ÷ Peso Corporal
@@ -196,15 +197,15 @@ const Profile = ({ onLogout }) => {
             <div className="consistency-section" style={{ marginTop: '32px', background: 'var(--bg-card)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
                     <div>
-                        <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-main)', margin: 0 }}>
-                            🗓️ Matriz de Consistência (Últimos 60 dias)
+                        <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-main)', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Icon svg={svgCalendar} color="#d4af37" size={18} /> Matriz de Consistência (Últimos 60 dias)
                         </h3>
                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '4px 0 0 0' }}>
                             O hábito supera a motivação • {consistency.streak} {consistency.streak === 1 ? 'dia seguido' : 'dias seguidos'} de foco
                         </p>
                     </div>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-main)', background: 'var(--bg-main)', padding: '4px 10px', borderRadius: '8px', border: '1px solid var(--border)', fontWeight: '600' }}>
-                        🔥 {consistency.thisWeekCount} treinos esta semana
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-main)', background: 'var(--bg-main)', padding: '4px 10px', borderRadius: '8px', border: '1px solid var(--border)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Icon svg={svgFlame} color="#d4af37" size={14} /> {consistency.thisWeekCount} treinos esta semana
                     </span>
                 </div>
                 <div className="consistency-grid" style={{ 
@@ -259,8 +260,8 @@ const Profile = ({ onLogout }) => {
             <div style={{ marginTop: '32px', background: 'var(--bg-card)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
                     <div>
-                        <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-main)', margin: 0 }}>
-                            📈 Linha do Tempo da Força (Evolução de Volume)
+                        <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-main)', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Icon svg={svgTrending} color="#d4af37" size={18} /> Linha do Tempo da Força (Evolução de Volume)
                         </h3>
                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '4px 0 0 0' }}>
                             Volume total levantado nas últimas 4 semanas
@@ -334,8 +335,8 @@ const Profile = ({ onLogout }) => {
                         </p>
                     </div>
                     {balance.hasNeglected && (
-                        <span style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '4px 10px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '600' }}>
-                            ⚠️ Simetria em Alerta
+                        <span style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '4px 10px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <Icon svg={svgAlert} color="#ef4444" size={14} /> Simetria em Alerta
                         </span>
                     )}
                 </div>
@@ -394,7 +395,6 @@ const Profile = ({ onLogout }) => {
                         }}
                     >
                         <div style={{ 
-                            fontSize: '1.8rem', 
                             background: b.unlocked ? 'var(--bg-main)' : 'transparent',
                             width: '44px',
                             height: '44px',
@@ -404,12 +404,12 @@ const Profile = ({ onLogout }) => {
                             justifyContent: 'center',
                             border: `1px solid ${b.unlocked ? 'var(--border)' : 'transparent'}`
                         }}>
-                            {b.unlocked ? b.icon : '🔒'}
+                            <Icon svg={b.unlocked ? b.icon : svgLock} size={22} color={b.unlocked ? '#d4af37' : 'var(--text-muted)'} />
                         </div>
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                 <strong style={{ fontSize: '0.95rem', color: 'var(--text-main)' }}>{b.name}</strong>
-                                {b.unlocked && <span style={{ fontSize: '0.75rem', color: 'var(--text-main)', fontWeight: '700' }}>✓</span>}
+                                {b.unlocked && <Icon svg={svgCheck} size={14} color="#10b981" />}
                             </div>
                             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '4px 0 0 0', lineHeight: 1.3 }}>
                                 {b.desc}
@@ -460,7 +460,7 @@ const Profile = ({ onLogout }) => {
                                             alignItems: 'center', justifyContent: 'flex-end', gap: '4px', 
                                             marginTop: '2px', fontWeight: '600'
                                         }}>
-                                            <span dangerouslySetInnerHTML={{ __html: svgTrophy }} /> PR
+                                            <Icon svg={svgTrophy} color="#eab308" size={14} /> PR
                                         </div>
                                     )}
                                 </div>

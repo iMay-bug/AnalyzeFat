@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { ranks, getCurrentRankInfo, getFeedSummaryStats } from '../data';
+import { ranks, getCurrentRankInfo, getFeedSummaryStats, svgWeight, svgClock, svgFlame, svgTrophy, svgCheck } from '../data';
+import Icon from './Icon';
 
 const Path = () => {
     const { userData } = useContext(AuthContext);
@@ -28,19 +29,19 @@ const Path = () => {
                 return (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px', marginBottom: '20px' }}>
                         <div style={{ background: 'var(--bg-card)', padding: '12px 14px', borderRadius: '10px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600' }}>🏋️ Carga Total</span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}><Icon svg={svgWeight} color="var(--text-muted)" size={14} /> Carga Total</span>
                             <strong style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '800' }}>{stats.totalCargaMonth.toLocaleString('pt-BR')} kg</strong>
                         </div>
                         <div style={{ background: 'var(--bg-card)', padding: '12px 14px', borderRadius: '10px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600' }}>⏱️ Tempo sob Ferro</span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}><Icon svg={svgClock} color="var(--text-muted)" size={14} /> Tempo sob Ferro</span>
                             <strong style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '800' }}>{stats.totalTimeHours}h</strong>
                         </div>
                         <div style={{ background: 'var(--bg-card)', padding: '12px 14px', borderRadius: '10px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600' }}>🔥 Séries em Falha</span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}><Icon svg={svgFlame} color="var(--text-muted)" size={14} /> Séries em Falha</span>
                             <strong style={{ fontSize: '1.1rem', color: '#ef4444', fontWeight: '800' }}>{stats.failSets} séries</strong>
                         </div>
                         <div style={{ background: 'var(--bg-card)', padding: '12px 14px', borderRadius: '10px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600' }}>🏆 Recordes (PRs)</span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}><Icon svg={svgTrophy} color="var(--text-muted)" size={14} /> Recordes (PRs)</span>
                             <strong style={{ fontSize: '1.1rem', color: '#d4af37', fontWeight: '800' }}>{stats.totalPRs} PRs</strong>
                         </div>
                     </div>
@@ -55,8 +56,8 @@ const Path = () => {
                             Rumo a <strong style={{ color: 'var(--text-main)' }}>{nextRank.name}</strong> • faltam <strong>{xpToNext} XP</strong>
                         </span>
                     ) : (
-                        <span style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: '600' }}>
-                            ✓ Nível Máximo Alcançado
+                        <span style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Icon svg={svgCheck} color="#10b981" size={16} /> Nível Máximo Alcançado
                         </span>
                     )}
                 </div>
