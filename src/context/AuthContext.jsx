@@ -60,6 +60,22 @@ export const AuthProvider = ({ children }) => {
     };
 
     const fetchUserProfile = async (userId, email, metadata) => {
+        const localKey = `analyze_fat_user_${userId}`;
+        const localCached = localStorage.getItem(localKey);
+        let cachedData = null;
+        if (localCached) {
+            try {
+                cachedData = JSON.parse(localCached);
+                if (cachedData) {
+                    setActiveUser(cachedData.profileName || email?.split('@')[0] || 'Monstro');
+                    setUserData(cachedData);
+                    setLoading(false);
+                }
+            } catch (e) {
+                console.error("Error parsing local cache:", e);
+            }
+        }
+
         const { data } = await supabase
             .from('profiles')
             .select('*')
@@ -67,27 +83,46 @@ export const AuthProvider = ({ children }) => {
             .single();
             
         if (data) {
-            setActiveUser(data.username || email?.split('@')[0] || 'Monstro');
-            setUserData({
-                xp: data.xp || 0,
-                workouts: data.workouts || 0,
-                prs: data.prs || {},
-                feed: data.feed || [],
-                profileImg: data.profile_img || null,
-                profileName: data.username || email?.split('@')[0] || 'Monstro'
-            });
-        } else {
-            // Fallback robusto: se o perfil ainda não existir no banco, inicializa com objeto padrão em vez de null
+            const rawPrs = data.prs || {};
+            const meta = rawPrs.__meta || {};
+            const cleanPrs = { ...rawPrs };
+            delete cleanPrs.__meta;
+
+            const profileName = data.username || email?.split('@')[0] || 'Monstro';
+            setActiveUser(profileName);
+
+            const mergedData = {
+                xp: data.xp || cachedData?.xp || 0,
+                workouts: data.workouts || cachedData?.workouts || 0,
+                prs: Object.keys(cleanPrs).length > 0 ? cleanPrs : (cachedData?.prs || {}),
+                feed: (data.feed && data.feed.length > 0) ? data.feed : (cachedData?.feed || []),
+                profileImg: data.profile_img || cachedData?.profileImg || null,
+                profileName: profileName,
+                customExercises: (meta.customExercises && meta.customExercises.length > 0) ? meta.customExercises : (cachedData?.customExercises || []),
+                routineMap: (meta.routineMap && Object.keys(meta.routineMap).length > 0) ? meta.routineMap : (cachedData?.routineMap || {}),
+                favorites: (meta.favorites && meta.favorites.length > 0) ? meta.favorites : (cachedData?.favorites || []),
+                bodyWeight: meta.bodyWeight || cachedData?.bodyWeight || 75
+            };
+
+            setUserData(mergedData);
+            localStorage.setItem(localKey, JSON.stringify(mergedData));
+        } else if (!cachedData) {
             const defaultName = metadata?.username || email?.split('@')[0] || 'Monstro';
             setActiveUser(defaultName);
-            setUserData({
+            const defaultData = {
                 xp: 0,
                 workouts: 0,
                 prs: {},
                 feed: [],
                 profileImg: null,
-                profileName: defaultName
-            });
+                profileName: defaultName,
+                customExercises: [],
+                routineMap: {},
+                favorites: [],
+                bodyWeight: 75
+            };
+            setUserData(defaultData);
+            localStorage.setItem(localKey, JSON.stringify(defaultData));
         }
         setLoading(false);
     };
@@ -158,32 +193,40 @@ export const AuthProvider = ({ children }) => {
     const syncData = async (newData) => {
         if (!activeUser) return;
         
-        // Optimistic UI update com rollback
         const previousData = { ...userData };
         const updatedData = { ...userData, ...newData };
         setUserData(updatedData);
         
         const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+            localStorage.setItem(`analyze_fat_user_${session.user.id}`, JSON.stringify(updatedData));
+        }
+
         if (!session?.user) return;
 
-        // Map React state keys to SQL column names
-        const sqlData = {};
-        if (newData.xp !== undefined) sqlData.xp = newData.xp;
-        if (newData.workouts !== undefined) sqlData.workouts = newData.workouts;
-        if (newData.prs !== undefined) sqlData.prs = newData.prs;
-        if (newData.feed !== undefined) sqlData.feed = newData.feed;
-        if (newData.profileImg !== undefined) sqlData.profile_img = newData.profileImg;
-        if (newData.profileName !== undefined) sqlData.username = newData.profileName;
+        const sqlData = {
+            xp: updatedData.xp || 0,
+            workouts: updatedData.workouts || 0,
+            feed: updatedData.feed || [],
+            profile_img: updatedData.profileImg || null,
+            username: updatedData.profileName || activeUser || 'Monstro',
+            prs: {
+                ...(updatedData.prs || {}),
+                __meta: {
+                    customExercises: updatedData.customExercises || [],
+                    routineMap: updatedData.routineMap || {},
+                    favorites: updatedData.favorites || [],
+                    bodyWeight: updatedData.bodyWeight || 75
+                }
+            }
+        };
 
-        // Push to Supabase SQL Table usando upsert para evitar erros caso a linha do perfil não exista
         const { error } = await supabase
             .from('profiles')
             .upsert({ id: session.user.id, ...sqlData }, { onConflict: 'id' });
         
         if (error) {
             console.error("Failed to sync data to SQL:", error.message);
-            setUserData(previousData);
-            showNotification("Erro ao sincronizar dados no servidor. Alterações foram revertidas.", "error");
         }
     };
 
