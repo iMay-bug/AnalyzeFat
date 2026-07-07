@@ -123,8 +123,21 @@ const Path = () => {
                             ref={isCurrent ? currentRankRef : null}
                         >
                             <div className="path-node-content" style={{ transform: `translateX(calc(-50% + ${xOffset}px))` }}>
-                                <div className={nodeClass} style={isUnlocked ? { borderColor: rank.color, display: 'flex', alignItems: 'center', justifyContent: 'center' } : { display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <RankImage rank={rank} size={36} isUnlocked={isUnlocked} />
+                                <div className={nodeClass} style={{
+                                    width: '84px',
+                                    height: '84px',
+                                    borderRadius: '50%',
+                                    border: `3.5px solid ${isUnlocked ? rank.color : 'var(--border)'}`,
+                                    padding: '3px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    background: 'var(--bg-main)',
+                                    boxShadow: isCurrent ? `0 0 25px ${rank.color || '#fff'}99` : isUnlocked ? `0 0 14px ${rank.color || '#fff'}40` : 'none',
+                                    overflow: 'hidden',
+                                    position: 'relative'
+                                }}>
+                                    <RankImage rank={rank} size="100%" isUnlocked={isUnlocked} />
                                 </div>
                                 <div className="path-label" style={isCurrent ? { color: 'var(--text-main)' } : {}}>
                                     {rank.name}<br />

@@ -162,16 +162,31 @@ const Profile = ({ onLogout }) => {
                             background: currentRank?.color ? `${currentRank.color}18` : 'rgba(255,255,255,0.05)',
                             color: currentRank?.color || '#fff',
                             border: `1px solid ${currentRank?.color || 'var(--border)'}`,
-                            padding: '4px 12px',
-                            borderRadius: '20px',
-                            fontSize: '0.8rem',
+                            padding: '4px 14px 4px 6px',
+                            borderRadius: '30px',
+                            fontSize: '0.82rem',
                             fontWeight: '800',
                             letterSpacing: '0.5px',
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: '8px'
+                            gap: '10px',
+                            boxShadow: `0 0 15px ${currentRank?.color || '#fff'}20`
                         }}>
-                            <RankImage rank={currentRank} size={18} isUnlocked={true} />
+                            <div style={{
+                                width: '30px',
+                                height: '30px',
+                                borderRadius: '50%',
+                                border: `2px solid ${currentRank?.color || '#fff'}`,
+                                padding: '1.5px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                background: 'var(--bg-main)',
+                                flexShrink: 0,
+                                overflow: 'hidden'
+                            }}>
+                                <RankImage rank={currentRank} size="100%" isUnlocked={true} />
+                            </div>
                             PATENTE: {currentRankName.toUpperCase()}
                         </span>
 
@@ -180,17 +195,31 @@ const Profile = ({ onLogout }) => {
                                 background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.05))',
                                 color: '#d4af37',
                                 border: '1px solid rgba(212, 175, 55, 0.5)',
-                                padding: '4px 14px',
-                                borderRadius: '20px',
-                                fontSize: '0.8rem',
+                                padding: '4px 14px 4px 6px',
+                                borderRadius: '30px',
+                                fontSize: '0.82rem',
                                 fontWeight: '800',
                                 letterSpacing: '0.5px',
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: '6px',
+                                gap: '10px',
                                 boxShadow: '0 0 15px rgba(212, 175, 55, 0.2)'
                             }}>
-                                <Icon svg={equippedBadge.icon} size={14} color="#d4af37" />
+                                <div style={{
+                                    width: '30px',
+                                    height: '30px',
+                                    borderRadius: '50%',
+                                    border: '2px solid #d4af37',
+                                    padding: '1.5px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    background: 'var(--bg-main)',
+                                    flexShrink: 0,
+                                    overflow: 'hidden'
+                                }}>
+                                    <Icon svg={equippedBadge.icon} size={16} color="#d4af37" />
+                                </div>
                                 TÍTULO: {equippedBadge.name.toUpperCase()}
                             </span>
                         ) : (
@@ -546,17 +575,22 @@ const Profile = ({ onLogout }) => {
                         >
                             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
                                 <div style={{ 
-                                    background: b.unlocked ? (isEquipped ? 'rgba(212, 175, 55, 0.2)' : 'var(--bg-main)') : 'transparent',
-                                    width: '48px',
-                                    height: '48px',
-                                    borderRadius: '12px',
+                                    background: b.unlocked ? (isEquipped ? 'rgba(212, 175, 55, 0.15)' : 'var(--bg-main)') : 'var(--bg-main)',
+                                    width: '54px',
+                                    height: '54px',
+                                    borderRadius: '50%',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    border: `1px solid ${isEquipped ? '#d4af37' : (b.unlocked ? 'var(--border)' : 'transparent')}`,
-                                    flexShrink: 0
+                                    border: `2.5px solid ${isEquipped ? '#d4af37' : (b.unlocked ? '#10b981' : 'var(--border)')}`,
+                                    padding: '3px',
+                                    flexShrink: 0,
+                                    boxShadow: isEquipped ? '0 0 16px rgba(212, 175, 55, 0.3)' : (b.unlocked ? '0 0 10px rgba(16, 185, 129, 0.15)' : 'none'),
+                                    overflow: 'hidden'
                                 }}>
-                                    <Icon svg={b.unlocked ? b.icon : svgLock} size={24} color={b.unlocked ? '#d4af37' : 'var(--text-muted)'} />
+                                    <div style={{ width: '100%', height: '100%', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: b.unlocked ? 'rgba(255,255,255,0.03)' : 'transparent' }}>
+                                        <Icon svg={b.unlocked ? b.icon : svgLock} size={24} color={isEquipped ? '#d4af37' : (b.unlocked ? '#10b981' : 'var(--text-muted)')} />
+                                    </div>
                                 </div>
                                 <div style={{ flex: 1 }}>
                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px' }}>

@@ -75,9 +75,24 @@ const Roadmap = () => {
                             
                             <div className="roadmap-card">
                                 <div className="roadmap-header">
-                                    <div className="roadmap-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        <RankImage rank={rank} size={32} isUnlocked={isUnlocked} />
-                                        <span style={{ fontSize: '1.1rem', fontWeight: '800', color: isUnlocked ? 'var(--text-main)' : 'var(--text-muted)' }}>{rank.name}</span>
+                                    <div className="roadmap-title" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                        <div style={{
+                                            width: '52px',
+                                            height: '52px',
+                                            borderRadius: '50%',
+                                            border: `2.5px solid ${isUnlocked ? rank.color : 'var(--border)'}`,
+                                            padding: '2.5px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            background: 'var(--bg-main)',
+                                            flexShrink: 0,
+                                            boxShadow: isUnlocked ? `0 0 14px ${rank.color}50` : 'none',
+                                            overflow: 'hidden'
+                                        }}>
+                                            <RankImage rank={rank} size="100%" isUnlocked={isUnlocked} />
+                                        </div>
+                                        <span style={{ fontSize: '1.15rem', fontWeight: '800', color: isUnlocked ? 'var(--text-main)' : 'var(--text-muted)' }}>{rank.name}</span>
                                         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '12px' }}>
                                             {rank.threshold} XP
                                         </span>
