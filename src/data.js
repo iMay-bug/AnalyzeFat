@@ -293,21 +293,31 @@ export const getConsistencyStats = (feed = []) => {
 
 // SISTEMA DE INSÍGNIAS DE CONQUISTAS ESPORTIVAS (BADGES)
 export const badgesDB = [
-    { id: "batismo", name: "Batismo de Fogo", desc: "Registrou sua primeira série na Liga do Ferro.", icon: svgFlame },
-    { id: "consistente_3", name: "Iniciante Dedicado", desc: "Completou 3 treinos registrados no aplicativo.", icon: svgActivity },
-    { id: "clube100", name: "Clube dos 100kg", desc: "Levantou 100kg ou mais em qualquer exercício.", icon: svgDumbbell },
-    { id: "clube200", name: "Monstro de Aço (200kg)", desc: "Levantou a marca impressionante de 200kg ou mais numa única série!", icon: svgWeight },
-    { id: "constante", name: "Imparável", desc: "Atingiu uma consistência de 5 dias treinados na mesma semana ou 5 dias seguidos.", icon: svgShield },
-    { id: "rei_pr", name: "Rei do PR", desc: "Conquistou 5 ou mais Recordes Pessoais (PRs).", icon: svgCrown },
-    { id: "deus_pr", name: "Lenda dos Recordes", desc: "Conquistou 15 ou mais Recordes Pessoais (PRs) registrados.", icon: svgTrophy },
-    { id: "madrugador", name: "Madrugador do Ferro", desc: "Registrou uma série de treino antes das 07h00 da manhã.", icon: svgSun },
-    { id: "coruja", name: "Coruja Noturna", desc: "Registrou uma série de treino após as 22h00 da noite.", icon: svgMoon },
-    { id: "maratonista", name: "Guerreiro de Esparta", desc: "Completou 25 séries ou treinos na Liga do Ferro.", icon: svgBiceps },
-    { id: "gladiador", name: "Gladiador de Elite", desc: "Completou 50 séries ou treinos de musculação registrados.", icon: svgTarget },
-    { id: "centuriao", name: "Centurião", desc: "Completou 100 séries de musculação registradas no aplicativo.", icon: svgDiamond },
-    { id: "lenda_viva", name: "Lenda Viva do Bodybuilding", desc: "Atingiu a incrível marca de 250 séries ou treinos registrados!", icon: svgGem },
-    { id: "mestre_volume", name: "Mestre do Volume", desc: "Acumulou mais de 10.000 kg levantados somando todas as suas séries!", icon: svgRocket },
-    { id: "precisao", name: "Foco Absoluto", desc: "Treinou em 7 dias diferentes ou alcançou uma sequência de 7 dias de consistência.", icon: svgCalendar }
+    { id: "batismo", name: "Batismo de Fogo", desc: "Registrou sua primeira série na Liga do Ferro.", icon: svgFlame, color: "#ff5e5e" },
+    { id: "consistente_3", name: "Iniciante Dedicado", desc: "Completou 3 treinos registrados no aplicativo.", icon: svgActivity, color: "#38bdf8" },
+    { id: "clube100", name: "Clube dos 100kg", desc: "Levantou 100kg ou mais em qualquer exercício.", icon: svgDumbbell, color: "#f59e0b" },
+    { id: "clube150", name: "Titã da Força (150kg)", desc: "Levantou 150kg ou mais em um único exercício.", icon: svgScale, color: "#ec4899" },
+    { id: "clube200", name: "Monstro de Aço (200kg)", desc: "Levantou a marca impressionante de 200kg ou mais numa única série!", icon: svgWeight, color: "#a855f7" },
+    { id: "clube300", name: "Força Colossal (300kg)", desc: "Ultrapassou a marca lendária de 300kg em uma série!", icon: svgTarget, color: "#e11d48" },
+    { id: "constante", name: "Imparável", desc: "Atingiu uma consistência de 5 dias treinados na mesma semana ou 5 dias seguidos.", icon: svgShield, color: "#10b981" },
+    { id: "inquebravel", name: "Muralha de Esparta", desc: "Manteve consistência de 10 treinos no mês ou 10 dias de treino.", icon: svgBox, color: "#06b6d4" },
+    { id: "rei_pr", name: "Rei do PR", desc: "Conquistou 5 ou mais Recordes Pessoais (PRs).", icon: svgCrown, color: "#eab308" },
+    { id: "mestre_pr", name: "Caçador de Recordes", desc: "Conquistou 10 ou mais Recordes Pessoais (PRs) registrados.", icon: svgTrending, color: "#f97316" },
+    { id: "deus_pr", name: "Lenda dos Recordes", desc: "Conquistou 15 ou mais Recordes Pessoais (PRs) registrados.", icon: svgTrophy, color: "#d4af37" },
+    { id: "imortal_pr", name: "O Quebrador de Limites", desc: "Conquistou 25 ou mais Recordes Pessoais (PRs) no app!", icon: svgRocket, color: "#8b5cf6" },
+    { id: "madrugador", name: "Madrugador do Ferro", desc: "Registrou uma série de treino antes das 07h00 da manhã.", icon: svgSun, color: "#fbbf24" },
+    { id: "coruja", name: "Coruja Noturna", desc: "Registrou uma série de treino após as 22h00 da noite.", icon: svgMoon, color: "#6366f1" },
+    { id: "hora_almoco", name: "Guerreiro do Meio-Dia", desc: "Registrou uma série de treino no horário de almoço entre 11h e 13h.", icon: svgClock, color: "#14b8a6" },
+    { id: "maratonista", name: "Guerreiro de Esparta", desc: "Completou 25 séries ou treinos na Liga do Ferro.", icon: svgBiceps, color: "#84cc16" },
+    { id: "gladiador", name: "Gladiador de Elite", desc: "Completou 50 séries ou treinos de musculação registrados.", icon: svgShield, color: "#3b82f6" },
+    { id: "centuriao", name: "Centurião", desc: "Completou 100 séries de musculação registradas no aplicativo.", icon: svgDiamond, color: "#00f0ff" },
+    { id: "veterano", name: "Veterano de Guerra", desc: "Completou 150 séries ou treinos acumulados na Liga do Ferro.", icon: svgTrophy, color: "#f43f5e" },
+    { id: "lenda_viva", name: "Lenda Viva do Bodybuilding", desc: "Atingiu a incrível marca de 250 séries ou treinos registrados!", icon: svgGem, color: "#ff007f" },
+    { id: "olimpico", name: "Deus do Olimpo", desc: "Acumulou mais de 500 séries ou treinos na sua jornada fitness!", icon: svgCrown, color: "#ffd700" },
+    { id: "iniciante_volume", name: "Levantador de Pesos", desc: "Acumulou mais de 2.500 kg levantados somando todas as suas séries.", icon: svgDumbbell, color: "#a3e635" },
+    { id: "mestre_volume", name: "Mestre do Volume", desc: "Acumulou mais de 10.000 kg levantados somando todas as suas séries!", icon: svgRocket, color: "#ef4444" },
+    { id: "tita_volume", name: "Titã do Volume", desc: "Acumulou mais de 50.000 kg de volume total levantado!", icon: svgDiamond, color: "#9333ea" },
+    { id: "precisao", name: "Foco Absoluto", desc: "Treinou em 7 dias diferentes ou alcançou uma sequência de 7 dias de consistência.", icon: svgCalendar, color: "#10b981" }
 ];
 
 export const getUnlockedBadges = (userData) => {
@@ -329,22 +339,37 @@ export const getUnlockedBadges = (userData) => {
         return d && d.getHours() >= 22;
     });
 
+    const hasMidday = feed.some(item => {
+        const d = getItemDate(item);
+        return d && d.getHours() >= 11 && d.getHours() <= 13;
+    });
+
     const unlocked = {};
     if (workouts >= 1) unlocked["batismo"] = true;
     if (workouts >= 3 || feed.length >= 3) unlocked["consistente_3"] = true;
     if (maxWeight >= 100) unlocked["clube100"] = true;
+    if (maxWeight >= 150) unlocked["clube150"] = true;
     if (maxWeight >= 200) unlocked["clube200"] = true;
+    if (maxWeight >= 300) unlocked["clube300"] = true;
     if (consistency.streak >= 5 || consistency.thisWeekCount >= 5 || workouts >= 10) unlocked["constante"] = true;
+    if (consistency.streak >= 10 || workouts >= 20) unlocked["inquebravel"] = true;
     if (prsCount >= 5 || workouts >= 12) unlocked["rei_pr"] = true;
+    if (prsCount >= 10 || workouts >= 22) unlocked["mestre_pr"] = true;
     if (prsCount >= 15 || workouts >= 30) unlocked["deus_pr"] = true;
+    if (prsCount >= 25 || workouts >= 60) unlocked["imortal_pr"] = true;
     if (hasEarly || workouts >= 5) unlocked["madrugador"] = true;
     if (hasLate || workouts >= 8) unlocked["coruja"] = true;
+    if (hasMidday || workouts >= 6) unlocked["hora_almoco"] = true;
     if (workouts >= 25 || feed.length >= 25) unlocked["maratonista"] = true;
     if (workouts >= 50 || feed.length >= 50) unlocked["gladiador"] = true;
     if (workouts >= 100 || feed.length >= 100) unlocked["centuriao"] = true;
+    if (workouts >= 150 || feed.length >= 150) unlocked["veterano"] = true;
     if (workouts >= 250 || feed.length >= 250) unlocked["lenda_viva"] = true;
+    if (workouts >= 500 || feed.length >= 500) unlocked["olimpico"] = true;
+    if (totalVolume >= 2500 || workouts >= 8) unlocked["iniciante_volume"] = true;
     if (totalVolume >= 10000 || workouts >= 15) unlocked["mestre_volume"] = true;
-    if (consistency.streak >= 7 || consistency.thisWeekCount >= 7 || workouts >= 20) unlocked["precisao"] = true;
+    if (totalVolume >= 50000 || workouts >= 40) unlocked["tita_volume"] = true;
+    if (consistency.streak >= 7 || consistency.thisWeekCount >= 7 || workouts >= 18) unlocked["precisao"] = true;
 
     return badgesDB.map(b => ({
         ...b,
