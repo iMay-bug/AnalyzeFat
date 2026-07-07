@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext, Suspense, lazy } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { svgMoon, svgSun, svgActivity, svgClock, svgStop, svgFlame, svgLightning, getConsistencyStats, formatElapsed } from '../data';
+import { svgMoon, svgSun, svgActivity, svgClock, svgStop, svgFlame, svgLightning, getConsistencyStats, getUnlockedBadges, formatElapsed } from '../data';
 import Icon from '../components/Icon';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const Path = lazy(() => import('../components/Path'));
 const Roadmap = lazy(() => import('../components/Roadmap'));
@@ -35,6 +36,8 @@ const Dashboard = () => {
 
     const xp = userData?.xp || 0;
     const consistency = getConsistencyStats(userData?.feed);
+    const badges = getUnlockedBadges(userData);
+    const equippedBadge = userData?.equippedBadge ? badges.find(b => b.id === userData.equippedBadge && b.unlocked) : null;
 
     return (
         <>
@@ -72,6 +75,26 @@ const Dashboard = () => {
                     }} title="Seu XP Total na Liga">
                         <span dangerouslySetInnerHTML={{ __html: svgLightning }} style={{ display: 'inline-flex', alignItems: 'center' }}></span> {xp} <span style={{ color: 'var(--text-muted)', fontWeight: '500', fontSize: '0.75rem' }}>XP</span>
                     </div>
+                    {equippedBadge && (
+                        <div style={{ 
+                            background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.05))', 
+                            border: '1px solid rgba(212, 175, 55, 0.5)', 
+                            padding: '6px 10px', 
+                            borderRadius: '8px', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '5px',
+                            fontSize: '0.75rem',
+                            fontWeight: '800',
+                            color: '#d4af37',
+                            boxShadow: '0 0 10px rgba(212, 175, 55, 0.2)',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px'
+                        }} title="Conquista / Título Equipado">
+                            <Icon svg={equippedBadge.icon} color="#d4af37" size={14} />
+                            <span>{equippedBadge.name}</span>
+                        </div>
+                    )}
                     <button 
                         id="theme-toggle" 
                         className="theme-toggle" 
@@ -83,12 +106,14 @@ const Dashboard = () => {
             </nav>
 
             <main className="app-content">
-                <Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Carregando...</div>}>
-                    {currentTab === 'view-path' && <Path />}
-                    {currentTab === 'view-roadmap' && <Roadmap />}
-                    {currentTab === 'view-workouts' && <Library />}
-                    {currentTab === 'view-profile' && <Profile onLogout={logout} />}
-                </Suspense>
+                <ErrorBoundary>
+                    <Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Carregando...</div>}>
+                        {currentTab === 'view-path' && <Path />}
+                        {currentTab === 'view-roadmap' && <Roadmap />}
+                        {currentTab === 'view-workouts' && <Library />}
+                        {currentTab === 'view-profile' && <Profile onLogout={logout} />}
+                    </Suspense>
+                </ErrorBoundary>
             </main>
 
             {/* MINI-PLAYER FIXO DE TREINO AO VIVO (STICKY WORKOUT BAR) */}

@@ -14,6 +14,7 @@ const Profile = ({ onLogout }) => {
 
     const consistency = getConsistencyStats(userData?.feed);
     const badges = getUnlockedBadges(userData);
+    const equippedBadge = userData?.equippedBadge ? badges.find(b => b.id === userData.equippedBadge && b.unlocked) : null;
     const balance = getWeeklyMuscleBalance(userData?.feed);
     const tonnage = getWeeklyTonnage(userData?.feed);
     const relativeLifts = getRelativeStrengthStatus(userData?.feed, userData?.bodyWeight || 75);
@@ -87,19 +88,69 @@ const Profile = ({ onLogout }) => {
                 </button>
             </div>
             
-            <div className="profile-header">
+            <div className="profile-header-card" style={{
+                background: 'linear-gradient(145deg, var(--bg-card) 0%, rgba(20, 20, 25, 0.95) 100%)',
+                border: `1px solid ${currentRank?.color || 'var(--border)'}`,
+                borderRadius: '20px',
+                padding: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '24px',
+                flexWrap: 'wrap',
+                boxShadow: `0 10px 30px -10px ${currentRank?.color ? currentRank.color + '33' : 'rgba(0,0,0,0.5)'}`,
+                position: 'relative',
+                overflow: 'hidden',
+                marginBottom: '28px'
+            }}>
+                <div style={{
+                    position: 'absolute',
+                    top: '-50px',
+                    right: '-50px',
+                    width: '180px',
+                    height: '180px',
+                    background: currentRank?.color || '#d4af37',
+                    opacity: 0.08,
+                    filter: 'blur(50px)',
+                    borderRadius: '50%',
+                    pointerEvents: 'none'
+                }} />
+
                 <div 
                     className="profile-pic-container" 
                     onClick={() => fileInputRef.current.click()}
                     title="Clique para alterar a foto"
+                    style={{
+                        width: '90px',
+                        height: '90px',
+                        borderRadius: '50%',
+                        border: `3px solid ${currentRank?.color || '#d4af37'}`,
+                        padding: '3px',
+                        position: 'relative',
+                        cursor: 'pointer',
+                        flexShrink: 0,
+                        boxShadow: `0 0 20px ${currentRank?.color ? currentRank.color + '40' : 'rgba(212,175,55,0.2)'}`
+                    }}
                 >
                     <img 
                         id="profile-img" 
                         src={userData?.profileImg || defaultProfileSVG} 
                         alt="Profile" 
+                        style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', background: 'var(--bg-main)' }}
                     />
-                    <div className="profile-upload-btn" title="Alterar foto" dangerouslySetInnerHTML={{ __html: svgCamera }}>
-                    </div>
+                    <div className="profile-upload-btn" title="Alterar foto" dangerouslySetInnerHTML={{ __html: svgCamera }} style={{
+                        position: 'absolute',
+                        bottom: '0',
+                        right: '0',
+                        background: 'var(--bg-main)',
+                        border: '1px solid var(--border)',
+                        borderRadius: '50%',
+                        width: '28px',
+                        height: '28px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--text-main)'
+                    }}></div>
                     <input 
                         type="file" 
                         ref={fileInputRef} 
@@ -108,36 +159,122 @@ const Profile = ({ onLogout }) => {
                         style={{ display: 'none' }} 
                     />
                 </div>
-                <div className="profile-info">
-                    <input 
-                        type="text" 
-                        id="profile-name" 
-                        className="profile-name-input" 
-                        value={userData?.profileName || "Guerreiro do Ferro"} 
-                        onChange={handleNameChange}
-                        title="Clique para editar seu nome"
-                    />
-                    <span className="profile-rank" id="profile-rank" style={{ color: currentRank?.color }}>{currentRankName}</span>
+                
+                <div className="profile-info" style={{ flex: 1, minWidth: '200px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                        <input 
+                            type="text" 
+                            id="profile-name" 
+                            className="profile-name-input" 
+                            value={userData?.profileName || "Guerreiro do Ferro"} 
+                            onChange={handleNameChange}
+                            title="Clique para editar seu nome"
+                            style={{
+                                background: 'transparent',
+                                border: 'none',
+                                borderBottom: '1px dashed transparent',
+                                color: 'var(--text-main)',
+                                fontSize: '1.6rem',
+                                fontWeight: '800',
+                                width: 'auto',
+                                outline: 'none',
+                                padding: '2px 0'
+                            }}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                        <span className="profile-rank" id="profile-rank" style={{ 
+                            background: currentRank?.color ? `${currentRank.color}18` : 'rgba(255,255,255,0.05)',
+                            color: currentRank?.color || '#fff',
+                            border: `1px solid ${currentRank?.color || 'var(--border)'}`,
+                            padding: '4px 12px',
+                            borderRadius: '20px',
+                            fontSize: '0.8rem',
+                            fontWeight: '800',
+                            letterSpacing: '0.5px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px'
+                        }}>
+                            <Icon svg={svgTrophy} size={14} color={currentRank?.color || '#fff'} />
+                            PATENTE: {currentRankName.toUpperCase()}
+                        </span>
+
+                        {equippedBadge ? (
+                            <span style={{ 
+                                background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.05))',
+                                color: '#d4af37',
+                                border: '1px solid rgba(212, 175, 55, 0.5)',
+                                padding: '4px 14px',
+                                borderRadius: '20px',
+                                fontSize: '0.8rem',
+                                fontWeight: '800',
+                                letterSpacing: '0.5px',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                boxShadow: '0 0 15px rgba(212, 175, 55, 0.2)'
+                            }}>
+                                <Icon svg={equippedBadge.icon} size={14} color="#d4af37" />
+                                TÍTULO: {equippedBadge.name.toUpperCase()}
+                            </span>
+                        ) : (
+                            <span style={{ 
+                                background: 'var(--bg-main)',
+                                color: 'var(--text-muted)',
+                                border: '1px dashed var(--border)',
+                                padding: '4px 12px',
+                                borderRadius: '20px',
+                                fontSize: '0.75rem',
+                                fontWeight: '600',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px'
+                            }}>
+                                Nenhum título equipado
+                            </span>
+                        )}
+                    </div>
                 </div>
             </div>
 
-            <div className="stats-grid">
-                <div className="stat-card">
-                    <div className="stat-label">Treinos Concluídos</div>
-                    <div className="stat-val" id="profile-workouts"><AnimatedCounter value={userData?.workouts || 0} /></div>
+            <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '16px', marginBottom: '36px' }}>
+                <div className="stat-card" style={{ background: 'linear-gradient(135deg, var(--bg-card), rgba(20,20,30,0.8))', border: '1px solid var(--border)', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px', boxShadow: '0 8px 20px rgba(0,0,0,0.15)', transition: 'transform 0.2s ease', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span className="stat-label" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Treinos Concluídos</span>
+                        <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '8px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Icon svg={svgCalendar} color="#10b981" size={18} />
+                        </div>
+                    </div>
+                    <div className="stat-val" id="profile-workouts" style={{ fontSize: '2.2rem', fontWeight: '900', color: 'var(--text-main)', lineHeight: 1 }}><AnimatedCounter value={userData?.workouts || 0} /></div>
                 </div>
-                <div className="stat-card">
-                    <div className="stat-label">Experiência (XP)</div>
-                    <div className="stat-val" id="profile-xp"><AnimatedCounter value={xp} /></div>
+                <div className="stat-card" style={{ background: 'linear-gradient(135deg, var(--bg-card), rgba(20,20,30,0.8))', border: '1px solid var(--border)', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px', boxShadow: '0 8px 20px rgba(0,0,0,0.15)', transition: 'transform 0.2s ease', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span className="stat-label" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Experiência Total</span>
+                        <div style={{ background: 'rgba(134, 59, 255, 0.15)', padding: '8px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Icon svg={svgTrending} color="#863bff" size={18} />
+                        </div>
+                    </div>
+                    <div className="stat-val" id="profile-xp" style={{ fontSize: '2.2rem', fontWeight: '900', color: 'var(--text-main)', lineHeight: 1 }}><AnimatedCounter value={xp} /> <span style={{ fontSize: '0.9rem', color: '#863bff', fontWeight: '800' }}>XP</span></div>
                 </div>
-                <div className="stat-card">
-                    <div className="stat-label">Recordes (PRs)</div>
-                    <div className="stat-val" id="profile-prs"><AnimatedCounter value={totalPRs} /></div>
+                <div className="stat-card" style={{ background: 'linear-gradient(135deg, var(--bg-card), rgba(20,20,30,0.8))', border: '1px solid var(--border)', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px', boxShadow: '0 8px 20px rgba(0,0,0,0.15)', transition: 'transform 0.2s ease', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span className="stat-label" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Recordes (PRs)</span>
+                        <div style={{ background: 'rgba(212, 175, 55, 0.15)', padding: '8px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Icon svg={svgTrophy} color="#d4af37" size={18} />
+                        </div>
+                    </div>
+                    <div className="stat-val" id="profile-prs" style={{ fontSize: '2.2rem', fontWeight: '900', color: '#d4af37', lineHeight: 1 }}><AnimatedCounter value={totalPRs} /></div>
                 </div>
-                <div className="stat-card">
-                    <div className="stat-label">Sequência Atual</div>
-                    <div className="stat-val" style={{ color: consistency.streak > 0 ? 'var(--text-main)' : 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <Icon svg={svgFlame} color="#d4af37" size={20} /> <AnimatedCounter value={consistency.streak} /> <span style={{ fontSize: '0.8rem', fontWeight: '400' }}>dias</span>
+                <div className="stat-card" style={{ background: 'linear-gradient(135deg, var(--bg-card), rgba(20,20,30,0.8))', border: '1px solid var(--border)', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px', boxShadow: '0 8px 20px rgba(0,0,0,0.15)', transition: 'transform 0.2s ease', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span className="stat-label" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Sequência Ativa</span>
+                        <div style={{ background: 'rgba(245, 158, 11, 0.15)', padding: '8px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Icon svg={svgFlame} color="#f59e0b" size={18} />
+                        </div>
+                    </div>
+                    <div className="stat-val" style={{ fontSize: '2.2rem', fontWeight: '900', color: consistency.streak > 0 ? '#f59e0b' : 'var(--text-muted)', display: 'flex', alignItems: 'baseline', gap: '6px', lineHeight: 1 }}>
+                        <AnimatedCounter value={consistency.streak} /> <span style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--text-muted)' }}>dias</span>
                     </div>
                 </div>
             </div>
@@ -411,46 +548,86 @@ const Profile = ({ onLogout }) => {
             <h3 className="history-title" style={{ marginTop: '32px' }}>
                 Insígnias e Conquistas ({badges.filter(b => b.unlocked).length}/{badges.length})
             </h3>
-            <div className="badges-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px', marginBottom: '32px' }}>
-                {badges.map((b) => (
-                    <div 
-                        key={b.id} 
-                        className={`badge-card ${b.unlocked ? 'unlocked' : 'locked'}`}
-                        style={{
-                            background: 'var(--bg-card)',
-                            border: `1px solid ${b.unlocked ? 'var(--border-hover)' : 'var(--border)'}`,
-                            borderRadius: '12px',
-                            padding: '16px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '14px',
-                            opacity: b.unlocked ? 1 : 0.45,
-                            transition: 'all 0.2s ease'
-                        }}
-                    >
-                        <div style={{ 
-                            background: b.unlocked ? 'var(--bg-main)' : 'transparent',
-                            width: '44px',
-                            height: '44px',
-                            borderRadius: '10px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            border: `1px solid ${b.unlocked ? 'var(--border)' : 'transparent'}`
-                        }}>
-                            <Icon svg={b.unlocked ? b.icon : svgLock} size={22} color={b.unlocked ? '#d4af37' : 'var(--text-muted)'} />
-                        </div>
-                        <div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <strong style={{ fontSize: '0.95rem', color: 'var(--text-main)' }}>{b.name}</strong>
-                                {b.unlocked && <Icon svg={svgCheck} size={14} color="#10b981" />}
+            <div className="badges-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '14px', marginBottom: '32px' }}>
+                {badges.map((b) => {
+                    const isEquipped = userData?.equippedBadge === b.id;
+                    return (
+                        <div 
+                            key={b.id} 
+                            className={`badge-card ${b.unlocked ? 'unlocked' : 'locked'}`}
+                            style={{
+                                background: isEquipped ? 'linear-gradient(145deg, rgba(212, 175, 55, 0.12), rgba(15, 15, 20, 0.9))' : 'var(--bg-card)',
+                                border: `1px solid ${isEquipped ? '#d4af37' : (b.unlocked ? 'var(--border-hover)' : 'var(--border)')}`,
+                                borderRadius: '16px',
+                                padding: '18px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '14px',
+                                opacity: b.unlocked ? 1 : 0.45,
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                boxShadow: isEquipped ? '0 8px 25px rgba(212, 175, 55, 0.15)' : 'none',
+                                position: 'relative'
+                            }}
+                        >
+                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
+                                <div style={{ 
+                                    background: b.unlocked ? (isEquipped ? 'rgba(212, 175, 55, 0.2)' : 'var(--bg-main)') : 'transparent',
+                                    width: '48px',
+                                    height: '48px',
+                                    borderRadius: '12px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    border: `1px solid ${isEquipped ? '#d4af37' : (b.unlocked ? 'var(--border)' : 'transparent')}`,
+                                    flexShrink: 0
+                                }}>
+                                    <Icon svg={b.unlocked ? b.icon : svgLock} size={24} color={b.unlocked ? '#d4af37' : 'var(--text-muted)'} />
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px' }}>
+                                        <strong style={{ fontSize: '1rem', color: 'var(--text-main)', fontWeight: '800' }}>{b.name}</strong>
+                                        {b.unlocked && <Icon svg={svgCheck} size={16} color="#10b981" />}
+                                    </div>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: '4px 0 0 0', lineHeight: 1.4 }}>
+                                        {b.desc}
+                                    </p>
+                                </div>
                             </div>
-                            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '4px 0 0 0', lineHeight: 1.3 }}>
-                                {b.desc}
-                            </p>
+
+                            {b.unlocked && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const nextBadge = isEquipped ? null : b.id;
+                                        syncData({ equippedBadge: nextBadge });
+                                        showNotification(isEquipped ? "Título removido do perfil." : `Título "${b.name}" equipado com sucesso!`, "success");
+                                    }}
+                                    style={{
+                                        padding: '8px 14px',
+                                        borderRadius: '10px',
+                                        fontSize: '0.78rem',
+                                        fontWeight: '800',
+                                        border: isEquipped ? '1px solid #d4af37' : '1px solid var(--border)',
+                                        background: isEquipped ? 'linear-gradient(135deg, #d4af37, #b8860b)' : 'var(--bg-main)',
+                                        color: isEquipped ? '#000' : 'var(--text-main)',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '8px',
+                                        width: '100%',
+                                        transition: 'all 0.2s ease',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px'
+                                    }}
+                                >
+                                    <Icon svg={isEquipped ? svgStar : svgTrophy} size={14} color={isEquipped ? '#000' : '#d4af37'} />
+                                    {isEquipped ? 'Título Equipado' : 'Equipar como Título'}
+                                </button>
+                            )}
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
             
             <h3 className="history-title">Histórico de Séries Recentes</h3>

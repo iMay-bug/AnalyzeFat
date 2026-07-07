@@ -42,23 +42,25 @@ const Library = () => {
         setShowCustomModal(false);
     };
 
-    const favorites = useMemo(() => userData?.favorites || [], [userData?.favorites]);
+    const favorites = useMemo(() => Array.isArray(userData?.favorites) ? userData.favorites : [], [userData?.favorites]);
 
     const allExercisesDB = useMemo(() => {
-        const custom = userData?.customExercises || [];
+        const custom = Array.isArray(userData?.customExercises) ? userData.customExercises : [];
         if (custom.length === 0) return exercisesDB;
 
         const customGrouped = {};
         custom.forEach(c => {
-            if (!customGrouped[c.group]) customGrouped[c.group] = [];
-            customGrouped[c.group].push(c);
+            if (!c || typeof c !== 'object') return;
+            const grp = c.group || 'Geral';
+            if (!customGrouped[grp]) customGrouped[grp] = [];
+            customGrouped[grp].push(c);
         });
 
         return exercisesDB.map(group => {
             const extra = customGrouped[group.group] || [];
             return {
                 ...group,
-                items: [...group.items, ...extra]
+                items: [...(group.items || []), ...extra]
             };
         });
     }, [userData?.customExercises]);
@@ -166,23 +168,25 @@ const Library = () => {
     };
 
     const filteredGroups = useMemo(() => {
-        const term = searchTerm.trim().toLowerCase();
-        return allExercisesDB.map(group => {
+        const term = (searchTerm || "").trim().toLowerCase();
+        return (allExercisesDB || []).map(group => {
+            if (!group || !Array.isArray(group.items)) return null;
             const matchingItems = group.items.filter(ex => {
-                const matchesTerm = !term || ex.name.toLowerCase().includes(term) || ex.desc.toLowerCase().includes(term);
+                if (!ex || typeof ex !== 'object') return false;
+                const matchesTerm = !term || (ex.name || "").toLowerCase().includes(term) || (ex.desc || "").toLowerCase().includes(term);
                 if (!matchesTerm) return false;
-                if (routineFilter === 'FAV') return favorites.includes(ex.id);
-                if (routineFilter !== 'ALL') return getExerciseRoutineGroup(ex, ex.id, userData?.routineMap) === routineFilter;
+                if (routineFilter === 'FAV') return Array.isArray(favorites) && favorites.includes(ex.id);
+                if (routineFilter !== 'ALL') return getExerciseRoutineGroup(ex, ex?.id, userData?.routineMap) === routineFilter;
                 return true;
             });
-            if ((group.group.toLowerCase().includes(term) && routineFilter === 'ALL') || matchingItems.length > 0) {
+            if (((group.group || "").toLowerCase().includes(term) && routineFilter === 'ALL') || matchingItems.length > 0) {
                 return {
                     ...group,
                     items: matchingItems.length > 0 ? matchingItems : (routineFilter === 'ALL' ? group.items : [])
                 };
             }
             return null;
-        }).filter(g => g && g.items.length > 0);
+        }).filter(g => g && Array.isArray(g.items) && g.items.length > 0);
     }, [searchTerm, routineFilter, favorites, allExercisesDB, userData?.routineMap]);
 
     return (
@@ -430,15 +434,15 @@ const Library = () => {
                     </div>
                 ) : (
                     <div className="exercise-card-grid">
-                        {(selectedGroup ? selectedGroup.items : filteredGroups.flatMap(g => g.items)).length === 0 ? (
+                        {(selectedGroup ? (selectedGroup.items || []) : filteredGroups.flatMap(g => g.items || [])).filter(Boolean).length === 0 ? (
                             <p style={{ color: 'var(--text-muted)', gridColumn: '1 / -1', textAlign: 'center', padding: '40px' }}>
                                 {routineFilter === 'FAV' ? 'Nenhum exercício favoritado ainda. Clique na estrela para salvá-los aqui!' : 'Nenhum exercício encontrado.'}
                             </p>
                         ) : (
-                            (selectedGroup ? selectedGroup.items : filteredGroups.flatMap(g => g.items)).map(ex => {
-                                const exSets = (userData?.feed || []).filter(i => i.exerciseId === ex.id);
-                                const best1RM = exSets.length > 0 ? Math.max(...exSets.map(s => calculate1RM(s.weight, s.reps))) : 0;
-                                const isFav = favorites.includes(ex.id);
+                            (selectedGroup ? (selectedGroup.items || []) : filteredGroups.flatMap(g => g.items || [])).filter(Boolean).map(ex => {
+                                const exSets = (userData?.feed || []).filter(i => i && typeof i === 'object' && i.exerciseId === ex.id);
+                                const best1RM = exSets.length > 0 ? Math.max(...exSets.map(s => calculate1RM(s?.weight, s?.reps))) : 0;
+                                const isFav = Array.isArray(favorites) && favorites.includes(ex.id);
 
                                 return (
                                     <div className="exercise-card" key={ex.id} onClick={() => openModal(ex)} style={{ position: 'relative' }}>
