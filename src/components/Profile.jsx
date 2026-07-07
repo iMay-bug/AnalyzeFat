@@ -1,6 +1,6 @@
-import React, { useContext, useRef } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { getCurrentRankInfo, svgTrophy, svgFlame, svgCalendar, svgTrending, svgScale, svgLock, svgCheck, svgAlert, svgStar, svgTarget, svgBox, svgCamera, getConsistencyStats, getUnlockedBadges, getWeeklyMuscleBalance, getWeeklyTonnage, getRelativeStrengthStatus, getHypertrophyZoneInfo, generateWorkoutSummary, getMonthlyVolumeTimeline } from '../data';
+import { getCurrentRankInfo, svgTrophy, svgFlame, svgCalendar, svgTrending, svgScale, svgLock, svgCheck, svgAlert, svgStar, svgTarget, svgBox, svgCamera, getConsistencyStats, getUnlockedBadges, getWeeklyMuscleBalance, getWeeklyTonnage, getRelativeStrengthStatus, getHypertrophyZoneInfo, generateWorkoutSummary, getMonthlyVolumeTimeline, accentColorsDB, svgShare, svgRuler, svgPalette } from '../data';
 import Icon from './Icon';
 import AnimatedCounter from './AnimatedCounter';
 import RankImage from './RankImage';
@@ -8,6 +8,15 @@ import RankImage from './RankImage';
 const Profile = ({ onLogout }) => {
     const { userData, syncData, showNotification, activeSession, sessionElapsed } = useContext(AuthContext);
     const fileInputRef = useRef(null);
+
+    const [showShareModal, setShowShareModal] = useState(false);
+    const [showBodyModal, setShowBodyModal] = useState(false);
+    const [showPaletteModal, setShowPaletteModal] = useState(false);
+    const [bodyWeight, setBodyWeight] = useState(userData?.bodyWeight || 75);
+    const [bodyArm, setBodyArm] = useState(userData?.bodyStats?.arm || '');
+    const [bodyChest, setBodyChest] = useState(userData?.bodyStats?.chest || '');
+    const [bodyWaist, setBodyWaist] = useState(userData?.bodyStats?.waist || '');
+    const [bodyThigh, setBodyThigh] = useState(userData?.bodyStats?.thigh || '');
 
     const xp = userData?.xp || 0;
     const { currentRank } = getCurrentRankInfo(xp);
@@ -240,6 +249,73 @@ const Profile = ({ onLogout }) => {
                         )}
                     </div>
                 </div>
+            </div>
+
+            {/* BARRA DE FERRAMENTAS VIP DO PERFIL */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px', marginBottom: '24px' }}>
+                <button
+                    type="button"
+                    onClick={() => setShowShareModal(true)}
+                    style={{
+                        background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05))',
+                        border: '1px solid rgba(245, 158, 11, 0.4)',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        color: '#f59e0b',
+                        fontWeight: '800',
+                        fontSize: '0.85rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 15px rgba(245, 158, 11, 0.1)'
+                    }}
+                >
+                    <Icon svg={svgShare} size={18} color="#f59e0b" /> Card para Stories
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setShowBodyModal(true)}
+                    style={{
+                        background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05))',
+                        border: '1px solid rgba(16, 185, 129, 0.4)',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        color: '#10b981',
+                        fontWeight: '800',
+                        fontSize: '0.85rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 15px rgba(16, 185, 129, 0.1)'
+                    }}
+                >
+                    <Icon svg={svgRuler} size={18} color="#10b981" /> Diário de Medidas
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setShowPaletteModal(true)}
+                    style={{
+                        background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(168, 85, 247, 0.05))',
+                        border: '1px solid rgba(168, 85, 247, 0.4)',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        color: '#a855f7',
+                        fontWeight: '800',
+                        fontSize: '0.85rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 15px rgba(168, 85, 247, 0.1)'
+                    }}
+                >
+                    <Icon svg={svgPalette} size={18} color="#a855f7" /> Cores do App
+                </button>
             </div>
 
             <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '16px', marginBottom: '36px' }}>
@@ -698,6 +774,175 @@ const Profile = ({ onLogout }) => {
             >
                 Sair da Conta
             </button>
+
+            {/* MODAL GERADOR DE CARD PARA STORIES */}
+            {showShareModal && (() => {
+                const totalVol = (userData?.feed || []).reduce((acc, item) => typeof item !== 'string' ? acc + ((item.weight || 0) * (item.reps || 0)) : acc, 0);
+                const bestPRs = Object.entries(userData?.prs || {}).slice(0, 3).map(([id, vol]) => `${id}: ${vol} kg`).join(' • ') || "Nenhum PR registrado ainda";
+                
+                const copyStoryText = () => {
+                    const text = `🏆 LIGA DO FERRO - ATLETA VIP 🏆\nAtleta: ${userData?.profileName || 'Guerreiro'}\nPatente: ${currentRankName.toUpperCase()} | XP: ${xp}\nTítulo: ${equippedBadge ? equippedBadge.name : 'Batizado no Ferro'}\nTreinos: ${userData?.workouts || 0} | Carga Acumulada: ${totalVol.toLocaleString('pt-BR')} kg\nPRs em Destaque: ${bestPRs}\n\n#LigaDoFerro #Musculação #AltaPerformance`;
+                    navigator.clipboard.writeText(text);
+                    showNotification("Texto do seu Card copiado! Cole no WhatsApp ou Instagram!", "success");
+                    setShowShareModal(false);
+                };
+
+                return (
+                    <div className="modal-overlay" onClick={() => setShowShareModal(false)} style={{ zIndex: 9999 }}>
+                        <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '420px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '20px', padding: '24px', boxShadow: '0 15px 50px rgba(0,0,0,0.7)', textAlign: 'center' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                                <span style={{ fontSize: '0.8rem', fontWeight: '800', color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '1px' }}>Card de Atleta VIP</span>
+                                <button type="button" onClick={() => setShowShareModal(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+                            </div>
+
+                            <div style={{ background: 'linear-gradient(145deg, #141417, #1c1c24)', border: '2px solid #d4af37', borderRadius: '16px', padding: '24px', marginBottom: '20px', position: 'relative', overflow: 'hidden', boxShadow: '0 0 25px rgba(212, 175, 55, 0.15)' }}>
+                                <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '80px', height: '80px', background: 'radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 70%)' }} />
+                                
+                                <div style={{ width: '80px', height: '80px', borderRadius: '50%', border: '3px solid #d4af37', margin: '0 auto 12px auto', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}>
+                                    <img src={userData?.profileImg || defaultProfileSVG} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                </div>
+
+                                <h3 style={{ fontSize: '1.4rem', fontWeight: '900', color: 'var(--text-main)', margin: '0 0 4px 0' }}>{userData?.profileName || 'Guerreiro do Ferro'}</h3>
+                                <span style={{ fontSize: '0.85rem', color: '#d4af37', fontWeight: '800', display: 'block', marginBottom: '14px', textTransform: 'uppercase' }}>
+                                    Patente {currentRankName} • {xp} XP
+                                </span>
+
+                                {equippedBadge && (
+                                    <div style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.4)', padding: '6px 12px', borderRadius: '20px', display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', fontWeight: '800', color: '#d4af37', marginBottom: '16px' }}>
+                                        <Icon svg={equippedBadge.icon} size={14} color="#d4af37" /> {equippedBadge.name}
+                                    </div>
+                                )}
+
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', background: 'var(--bg-main)', padding: '12px', borderRadius: '12px', border: '1px solid var(--border)', textAlign: 'left' }}>
+                                    <div>
+                                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block' }}>TREINOS FEITOS</span>
+                                        <strong style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: '800' }}>{userData?.workouts || 0}</strong>
+                                    </div>
+                                    <div>
+                                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block' }}>CARGA ACUMULADA</span>
+                                        <strong style={{ fontSize: '1.1rem', color: '#10b981', fontWeight: '800' }}>{totalVol.toLocaleString('pt-BR')} kg</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" className="btn-primary" onClick={copyStoryText} style={{ width: '100%', padding: '14px', background: '#f59e0b', color: '#000', fontWeight: '800', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                <Icon svg={svgShare} size={18} color="#000" /> Copiar Resumo para Stories
+                            </button>
+                        </div>
+                    </div>
+                );
+            })()}
+
+            {/* MODAL DIÁRIO DE MEDIDAS */}
+            {showBodyModal && (
+                <div className="modal-overlay" onClick={() => setShowBodyModal(false)} style={{ zIndex: 9999 }}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '440px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '8px', borderRadius: '10px', display: 'flex' }}>
+                                    <Icon svg={svgRuler} size={20} color="#10b981" />
+                                </div>
+                                <h3 style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-main)', margin: 0 }}>Diário de Medidas Físicas</h3>
+                            </div>
+                            <button type="button" onClick={() => setShowBodyModal(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+                            <div>
+                                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Peso Corporal (kg)</label>
+                                <input type="number" step="0.1" value={bodyWeight} onChange={e => setBodyWeight(e.target.value)} style={{ width: '100%', padding: '10px', background: 'var(--bg-main)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-main)', fontWeight: '800' }} />
+                            </div>
+                            <div>
+                                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Braço (cm)</label>
+                                <input type="number" step="0.5" value={bodyArm} onChange={e => setBodyArm(e.target.value)} placeholder="Ex: 40" style={{ width: '100%', padding: '10px', background: 'var(--bg-main)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-main)', fontWeight: '800' }} />
+                            </div>
+                            <div>
+                                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Peitoral (cm)</label>
+                                <input type="number" step="0.5" value={bodyChest} onChange={e => setBodyChest(e.target.value)} placeholder="Ex: 105" style={{ width: '100%', padding: '10px', background: 'var(--bg-main)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-main)', fontWeight: '800' }} />
+                            </div>
+                            <div>
+                                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Cintura (cm)</label>
+                                <input type="number" step="0.5" value={bodyWaist} onChange={e => setBodyWaist(e.target.value)} placeholder="Ex: 80" style={{ width: '100%', padding: '10px', background: 'var(--bg-main)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-main)', fontWeight: '800' }} />
+                            </div>
+                            <div style={{ gridColumn: 'span 2' }}>
+                                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Coxa (cm)</label>
+                                <input type="number" step="0.5" value={bodyThigh} onChange={e => setBodyThigh(e.target.value)} placeholder="Ex: 62" style={{ width: '100%', padding: '10px', background: 'var(--bg-main)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-main)', fontWeight: '800' }} />
+                            </div>
+                        </div>
+
+                        <button
+                            type="button"
+                            className="btn-primary"
+                            onClick={() => {
+                                syncData({
+                                    bodyWeight: Number(bodyWeight),
+                                    bodyStats: { arm: bodyArm, chest: bodyChest, waist: bodyWaist, thigh: bodyThigh }
+                                });
+                                showNotification("Medidas corporais e peso salvos com sucesso!", "success");
+                                setShowBodyModal(false);
+                            }}
+                            style={{ width: '100%', padding: '12px', background: '#10b981', color: '#000', fontWeight: '800', borderRadius: '10px' }}
+                        >
+                            Salvar Medidas
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL CORES E ACENTO DO APP */}
+            {showPaletteModal && (
+                <div className="modal-overlay" onClick={() => setShowPaletteModal(false)} style={{ zIndex: 9999 }}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '420px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <div style={{ background: 'rgba(168, 85, 247, 0.15)', padding: '8px', borderRadius: '10px', display: 'flex' }}>
+                                    <Icon svg={svgPalette} size={20} color="#a855f7" />
+                                </div>
+                                <h3 style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-main)', margin: 0 }}>Tema e Cores VIP</h3>
+                            </div>
+                            <button type="button" onClick={() => setShowPaletteModal(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+                        </div>
+
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '18px' }}>
+                            Escolha sua cor de acento preferida para personalizar destaques e botões no aplicativo:
+                        </p>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '24px' }}>
+                            {accentColorsDB.map(col => {
+                                const isSelected = userData?.accentColor === col.color;
+                                return (
+                                    <div
+                                        key={col.id}
+                                        onClick={() => {
+                                            syncData({ accentColor: col.color });
+                                            document.documentElement.style.setProperty('--accent', col.color);
+                                            showNotification(`Tema ${col.name} ativado!`, "success");
+                                        }}
+                                        style={{
+                                            background: isSelected ? col.bgTint : 'var(--bg-main)',
+                                            border: `2px solid ${isSelected ? col.color : 'var(--border)'}`,
+                                            padding: '12px 14px',
+                                            borderRadius: '12px',
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '10px',
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                    >
+                                        <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: col.color, flexShrink: 0, boxShadow: `0 0 10px ${col.color}` }} />
+                                        <span style={{ fontSize: '0.85rem', fontWeight: '800', color: isSelected ? col.color : 'var(--text-main)' }}>{col.name}</span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <button type="button" className="btn-primary" onClick={() => setShowPaletteModal(false)} style={{ width: '100%', padding: '12px', background: '#a855f7', color: '#fff', fontWeight: '800', borderRadius: '10px' }}>
+                            Concluir Personalização
+                        </button>
+                    </div>
+                </div>
+            )}
         </section>
     );
 };

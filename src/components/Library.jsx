@@ -1,6 +1,6 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { exercisesDB, formatElapsed, calculate1RM, getExerciseHistory, calculatePlates, getExerciseRoutineGroup, getWeeklyTonnage, svgLightning, svgBox, svgSearch, svgActivity, svgClock, svgStop, svgStar, svgTarget, svgTrending, svgDumbbell, svgFlame, svgBiceps, svgPlay, svgBack, svgPlus, svgCheck } from '../data';
+import { exercisesDB, formatElapsed, calculate1RM, getExerciseHistory, calculatePlates, getExerciseRoutineGroup, getWeeklyTonnage, svgLightning, svgBox, svgSearch, svgActivity, svgClock, svgStop, svgStar, svgTarget, svgTrending, svgDumbbell, svgFlame, svgBiceps, svgPlay, svgBack, svgPlus, svgCheck, svgCalculator } from '../data';
 import Icon from './Icon';
 
 const Library = () => {
@@ -23,6 +23,10 @@ const Library = () => {
     const [newRoutineColor, setNewRoutineColor] = useState('#863bff');
     const [showAddExerciseModal, setShowAddExerciseModal] = useState(false);
     const [addExerciseSearch, setAddExerciseSearch] = useState('');
+
+    const [showCalcModal, setShowCalcModal] = useState(false);
+    const [calcWeight, setCalcWeight] = useState('100');
+    const [calcBar, setCalcBar] = useState(20);
 
     const defaultRoutinesList = useMemo(() => [
         { id: 'A', name: 'Treino A (Peito/Tríceps)', label: 'Treino A', color: '#ef4444', dotClass: 'dot-a' },
@@ -323,7 +327,14 @@ const Library = () => {
                         )}
                     </div>
 
-                    <div style={{ display: 'flex', gap: '6px' }}>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                        <button 
+                            className="btn-secondary" 
+                            style={{ padding: '4px 10px', fontSize: '0.75rem', width: 'auto', borderRadius: '6px' }}
+                            onClick={() => startRestTimer(45)}
+                        >
+                            45s
+                        </button>
                         <button 
                             className="btn-secondary" 
                             style={{ padding: '4px 10px', fontSize: '0.75rem', width: 'auto', borderRadius: '6px' }}
@@ -382,6 +393,14 @@ const Library = () => {
                         onClick={() => setShowCustomModal(true)}
                     >
                         <span dangerouslySetInnerHTML={{ __html: svgPlus }}></span> Criar Meu Exercício
+                    </button>
+                    <button
+                        type="button"
+                        className="btn-secondary"
+                        style={{ padding: '8px 14px', fontSize: '0.8rem', width: 'auto', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px', borderColor: '#38bdf8', color: '#38bdf8', fontWeight: '800' }}
+                        onClick={() => setShowCalcModal(true)}
+                    >
+                        <Icon svg={svgCalculator} size={16} color="#38bdf8" /> Calculadora de Anilhas
                     </button>
                     <div className="search-input-container" style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
                         <span className="search-icon" style={{ position: 'absolute', left: '10px', display: 'flex', alignItems: 'center' }}><Icon svg={svgSearch} color="var(--text-muted)" size={14} /></span>
@@ -1092,6 +1111,83 @@ const Library = () => {
                                     Concluir e Ver Ficha
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                );
+            })()}
+
+            {/* MODAL CALCULADORA DE ANILHAS */}
+            {showCalcModal && (() => {
+                const total = parseFloat(calcWeight) || 0;
+                const calcResult = calculatePlates(total, calcBar);
+                return (
+                    <div className="modal-overlay" onClick={() => setShowCalcModal(false)} style={{ zIndex: 9999 }}>
+                        <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '440px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <div style={{ background: 'rgba(56, 189, 248, 0.15)', padding: '8px', borderRadius: '10px', display: 'flex' }}>
+                                        <Icon svg={svgCalculator} size={20} color="#38bdf8" />
+                                    </div>
+                                    <h3 style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-main)', margin: 0 }}>Calculadora de Anilhas</h3>
+                                </div>
+                                <button type="button" onClick={() => setShowCalcModal(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+                                <div>
+                                    <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Carga Total (kg)</label>
+                                    <input 
+                                        type="number" 
+                                        value={calcWeight} 
+                                        onChange={e => setCalcWeight(e.target.value)} 
+                                        style={{ width: '100%', padding: '10px', background: 'var(--bg-main)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '1.1rem', fontWeight: '800', textAlign: 'center' }}
+                                    />
+                                </div>
+                                <div>
+                                    <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600', display: 'block', marginBottom: '6px' }}>Peso da Barra (kg)</label>
+                                    <select 
+                                        value={calcBar} 
+                                        onChange={e => setCalcBar(Number(e.target.value))}
+                                        style={{ width: '100%', padding: '10px', background: 'var(--bg-main)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '1.1rem', fontWeight: '800', textAlign: 'center' }}
+                                    >
+                                        <option value={20}>20 kg (Olímpica)</option>
+                                        <option value={15}>15 kg (Feminina)</option>
+                                        <option value={12}>12 kg (W-Bar/EZ)</option>
+                                        <option value={10}>10 kg (Padrão)</option>
+                                        <option value={0}>0 kg (Apenas Anilhas)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', borderRadius: '12px', padding: '16px', marginBottom: '20px', textAlign: 'center' }}>
+                                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'block' }}>Para cada lado da barra coloque:</span>
+                                <strong style={{ fontSize: '1.8rem', color: '#38bdf8', fontWeight: '800', display: 'block', margin: '4px 0' }}>
+                                    {calcResult.perSide} kg
+                                </strong>
+                                {calcResult.remainder > 0 && (
+                                    <span style={{ fontSize: '0.75rem', color: '#ef4444' }}>Falta distribuir: {calcResult.remainder} kg por lado (sem anilhas compatíveis)</span>
+                                )}
+                            </div>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+                                <strong style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: '700' }}>Anilhas por lado:</strong>
+                                {calcResult.plates.length > 0 ? (
+                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                        {calcResult.plates.map((p, idx) => (
+                                            <div key={idx} style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid #38bdf8', padding: '8px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                <strong style={{ fontSize: '1.1rem', color: '#38bdf8' }}>{p.count}x</strong>
+                                                <span style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: '700' }}>{p.weight} kg</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Nenhuma anilha necessária para esta carga.</span>
+                                )}
+                            </div>
+
+                            <button type="button" className="btn-primary" onClick={() => setShowCalcModal(false)} style={{ width: '100%', padding: '12px', background: '#38bdf8', color: '#000', fontWeight: '800', borderRadius: '10px' }}>
+                                Fechar Calculadora
+                            </button>
                         </div>
                     </div>
                 );

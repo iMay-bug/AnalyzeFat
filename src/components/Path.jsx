@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { ranks, getCurrentRankInfo, getFeedSummaryStats, svgWeight, svgClock, svgFlame, svgTrophy, svgCheck } from '../data';
+import { ranks, getCurrentRankInfo, getFeedSummaryStats, getWeeklyQuests, svgWeight, svgClock, svgFlame, svgTrophy, svgCheck, svgQuest } from '../data';
 import Icon from './Icon';
 import AnimatedCounter from './AnimatedCounter';
 import RankImage from './RankImage';
@@ -20,6 +20,7 @@ const Path = () => {
     }, [currentRankIndex]);
 
     const reversedRanks = [...ranks].reverse();
+    const quests = getWeeklyQuests(userData);
 
     return (
         <section id="view-path" className="view-section active">
@@ -49,6 +50,64 @@ const Path = () => {
                     </div>
                 );
             })()}
+
+            {/* PAINEL DE MISSÕES DA SEMANA */}
+            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '14px', padding: '18px', marginBottom: '24px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ background: 'rgba(56, 189, 248, 0.15)', padding: '8px', borderRadius: '10px', color: '#38bdf8', display: 'flex' }}>
+                            <Icon svg={svgQuest} size={18} color="#38bdf8" />
+                        </div>
+                        <div>
+                            <h3 style={{ fontSize: '1.05rem', fontWeight: '800', color: 'var(--text-main)', margin: 0 }}>Missões da Semana</h3>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Desafios automáticos que rendem XP de progressão</span>
+                        </div>
+                    </div>
+                    <span style={{ fontSize: '0.75rem', fontWeight: '700', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', padding: '4px 10px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Icon svg={svgCheck} size={14} color="#10b981" /> Renovação Semanal
+                    </span>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px' }}>
+                    {quests.map(q => {
+                        const pct = Math.min(100, Math.round((q.progress / q.goal) * 100));
+                        return (
+                            <div key={q.id} style={{
+                                background: 'var(--bg-main)',
+                                border: `1px solid ${q.completed ? '#10b981' : 'var(--border)'}`,
+                                borderRadius: '10px',
+                                padding: '12px 14px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '8px',
+                                position: 'relative',
+                                overflow: 'hidden'
+                            }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+                                    <div>
+                                        <strong style={{ fontSize: '0.9rem', color: q.completed ? '#10b981' : 'var(--text-main)', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            {q.title} {q.completed && <Icon svg={svgCheck} size={14} color="#10b981" />}
+                                        </strong>
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '2px 0 0 0', lineHeight: 1.3 }}>
+                                            {q.desc}
+                                        </p>
+                                    </div>
+                                    <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#d4af37', background: 'rgba(212, 175, 55, 0.15)', padding: '2px 8px', borderRadius: '12px', flexShrink: 0 }}>
+                                        +{q.xpReward} XP
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600' }}>
+                                    <span>Progresso</span>
+                                    <span style={{ color: q.completed ? '#10b981' : 'var(--text-main)' }}>{q.progress.toLocaleString('pt-BR')} / {q.goal.toLocaleString('pt-BR')} {q.unit} ({pct}%)</span>
+                                </div>
+                                <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
+                                    <div style={{ width: `${pct}%`, height: '100%', background: q.completed ? '#10b981' : '#38bdf8', transition: 'width 0.4s ease' }} />
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
 
             <div className="xp-hud">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>

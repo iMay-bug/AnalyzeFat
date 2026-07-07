@@ -34,6 +34,12 @@ export const svgDotGreen = `<svg width="12" height="12" viewBox="0 0 12 12" fill
 export const svgDotYellow = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="vertical-align: middle; margin-right: 5px;"><circle cx="6" cy="6" r="5" fill="#F1C40F"/></svg>`;
 export const svgPlus = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
 export const svgBack = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`;
+export const svgTimer = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2 2"></path><path d="M5 3L2 6"></path><path d="M22 6l-3-3"></path><path d="M6.38 18.7L4 21"></path><path d="M17.64 18.67L20 21"></path></svg>`;
+export const svgCalculator = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="14.01"></line><line x1="12" y1="14" x2="12" y2="14.01"></line><line x1="8" y1="14" x2="8" y2="14.01"></line><line x1="16" y1="18" x2="16" y2="18.01"></line><line x1="12" y1="18" x2="12" y2="18.01"></line><line x1="8" y1="18" x2="8" y2="18.01"></line></svg>`;
+export const svgQuest = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>`;
+export const svgShare = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>`;
+export const svgRuler = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"></path><line x1="14.5" y1="12.5" x2="18" y2="16"></line><line x1="11.5" y1="9.5" x2="15" y2="13"></line><line x1="8.5" y1="6.5" x2="12" y2="10"></line><line x1="5.5" y1="3.5" x2="9" y2="7"></line></svg>`;
+export const svgPalette = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"></circle><circle cx="17.5" cy="10.5" r=".5"></circle><circle cx="8.5" cy="7.5" r=".5"></circle><circle cx="6.5" cy="12.5" r=".5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg>`;
 
 // FORMATADOR DE TEMPO DE SESSÃO EM TEMPO REAL
 export const formatElapsed = (totalSeconds) => {
@@ -455,25 +461,32 @@ export const getExerciseHistory = (exerciseId, exerciseName, feed = [], limit = 
 // 3. MONTADOR DE ANILHAS DE BARRA (Plate Calculator)
 export const calculatePlates = (totalWeight, barWeight = 20) => {
     const w = parseFloat(totalWeight) || 0;
-    if (w <= barWeight) {
-        return { perSideWeight: 0, plates: [], message: `Apenas a barra (${barWeight}kg)` };
-    }
-    let perSide = (w - barWeight) / 2;
+    const perSide = Math.max(0, w - barWeight) / 2;
     const availablePlates = [25, 20, 15, 10, 5, 2.5, 1.25];
-    const platesUsed = [];
     let remaining = perSide;
+    const plates = [];
+    const rawPlates = [];
 
-    for (const plate of availablePlates) {
-        while (remaining >= plate) {
-            platesUsed.push(plate);
-            remaining = Math.round((remaining - plate) * 100) / 100;
+    for (let p of availablePlates) {
+        let count = 0;
+        while (remaining >= p) {
+            count++;
+            rawPlates.push(p);
+            remaining = Math.round((remaining - p) * 100) / 100;
+        }
+        if (count > 0) {
+            plates.push({ weight: p, count });
         }
     }
+
     return {
+        perSide: perSide,
         perSideWeight: perSide,
-        plates: platesUsed,
-        remaining,
-        message: platesUsed.length > 0 ? `Cada lado: ${platesUsed.map(p => `${p}kg`).join(' + ')}` : `Apenas a barra (${barWeight}kg)`
+        plates: plates,
+        rawPlates: rawPlates,
+        remaining: remaining,
+        remainder: remaining,
+        message: rawPlates.length > 0 ? `Cada lado: ${rawPlates.map(p => `${p}kg`).join(' + ')}` : `Apenas a barra (${barWeight}kg)`
     };
 };
 
@@ -667,3 +680,69 @@ export const getHypertrophyZoneInfo = (setsCount = 0) => {
         return { label: "Volume Alto (>20 séries)", color: "#f59e0b", status: "high" };
     }
 };
+
+// 9. CÁLCULO DE MISSÕES DA SEMANA (WEEKLY QUESTS)
+export const getWeeklyQuests = (userData) => {
+    const feed = (userData?.feed || []).filter(i => typeof i !== 'string');
+    const now = Date.now();
+    const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+    const thisWeekItems = feed.filter(i => {
+        const d = getItemDate(i);
+        return d && d.getTime() >= sevenDaysAgo;
+    });
+
+    const weeklyVolume = thisWeekItems.reduce((acc, item) => acc + ((parseFloat(item?.weight) || 0) * (parseInt(item?.reps) || 1)), 0);
+    
+    const uniqueDays = new Set();
+    thisWeekItems.forEach(item => {
+        const d = getItemDate(item);
+        if (d) uniqueDays.add(d.toDateString());
+    });
+    const daysTrained = uniqueDays.size;
+
+    const prsHitWeek = thisWeekItems.filter(i => i?.isPR).length;
+
+    return [
+        {
+            id: "quest_vol",
+            title: "Titã da Carga Semanal",
+            desc: "Acumule 5.000 kg de volume total levantado esta semana.",
+            progress: Math.min(weeklyVolume, 5000),
+            goal: 5000,
+            unit: "kg",
+            xpReward: 150,
+            completed: weeklyVolume >= 5000
+        },
+        {
+            id: "quest_days",
+            title: "Guerreiro da Constância",
+            desc: "Treine em 4 dias diferentes durante a semana atual.",
+            progress: Math.min(daysTrained, 4),
+            goal: 4,
+            unit: "dias",
+            xpReward: 200,
+            completed: daysTrained >= 4
+        },
+        {
+            id: "quest_pr",
+            title: "Caçador de Limites",
+            desc: "Conquiste pelo menos 1 novo Recorde Pessoal (PR) esta semana.",
+            progress: Math.min(prsHitWeek, 1),
+            goal: 1,
+            unit: "PR",
+            xpReward: 250,
+            completed: prsHitWeek >= 1
+        }
+    ];
+};
+
+
+// 11. TEMAS DE ACENTO PERSONALIZÁVEIS
+export const accentColorsDB = [
+    { id: "gold", name: "Ouro Imperial", color: "#d4af37", bgTint: "rgba(212, 175, 55, 0.15)" },
+    { id: "sparta", name: "Vermelho Esparta", color: "#f43f5e", bgTint: "rgba(244, 63, 94, 0.15)" },
+    { id: "cyber", name: "Azul Cibernético", color: "#38bdf8", bgTint: "rgba(56, 189, 248, 0.15)" },
+    { id: "emerald", name: "Verde Esmeralda", color: "#10b981", bgTint: "rgba(16, 185, 129, 0.15)" },
+    { id: "titan", name: "Roxo Titã", color: "#a855f7", bgTint: "rgba(168, 85, 247, 0.15)" },
+    { id: "amber", name: "Ouro Âmbar", color: "#f59e0b", bgTint: "rgba(245, 158, 11, 0.15)" }
+];

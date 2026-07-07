@@ -28,6 +28,14 @@ const Dashboard = () => {
         localStorage.setItem('theme', theme);
     }, [theme]);
 
+    useEffect(() => {
+        if (userData?.accentColor) {
+            document.documentElement.style.setProperty('--accent', userData.accentColor);
+        } else {
+            document.documentElement.style.removeProperty('--accent');
+        }
+    }, [userData?.accentColor]);
+
     const toggleTheme = () => {
         setTheme(prev => prev === 'dark' ? 'light' : 'dark');
     };
