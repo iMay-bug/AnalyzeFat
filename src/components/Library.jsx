@@ -1,6 +1,6 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { exercisesDB, formatElapsed, calculate1RM, getExerciseHistory, calculatePlates, getExerciseRoutineGroup, getWeeklyTonnage, svgLightning, svgBox, svgSearch, svgActivity, svgClock, svgStop, svgStar, svgTarget, svgTrending, svgDumbbell, svgFlame, svgBiceps } from '../data';
+import { exercisesDB, formatElapsed, calculate1RM, getExerciseHistory, calculatePlates, getExerciseRoutineGroup, getWeeklyTonnage, svgLightning, svgBox, svgSearch, svgActivity, svgClock, svgStop, svgStar, svgTarget, svgTrending, svgDumbbell, svgFlame, svgBiceps, svgPlay, svgBack, svgPlus } from '../data';
 import Icon from './Icon';
 
 const Library = () => {
