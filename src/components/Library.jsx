@@ -1,6 +1,6 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { exercisesDB, formatElapsed, calculate1RM, getExerciseHistory, calculatePlates, getExerciseRoutineGroup, getWeeklyTonnage, svgLightning, svgBox, svgSearch, svgActivity, svgClock, svgStop, svgStar, svgTarget, svgTrending, svgDumbbell, svgFlame, svgBiceps, svgPlay, svgBack, svgPlus } from '../data';
+import { exercisesDB, formatElapsed, calculate1RM, getExerciseHistory, calculatePlates, getExerciseRoutineGroup, getWeeklyTonnage, svgLightning, svgBox, svgSearch, svgActivity, svgClock, svgStop, svgStar, svgTarget, svgTrending, svgDumbbell, svgFlame, svgBiceps, svgPlay, svgBack, svgPlus, svgCheck } from '../data';
 import Icon from './Icon';
 
 const Library = () => {
@@ -17,6 +17,45 @@ const Library = () => {
     const [customName, setCustomName] = useState('');
     const [customGroup, setCustomGroup] = useState('Peito');
     const [customRoutine, setCustomRoutine] = useState('A');
+
+    const [showCreateRoutineModal, setShowCreateRoutineModal] = useState(false);
+    const [newRoutineName, setNewRoutineName] = useState('');
+    const [newRoutineColor, setNewRoutineColor] = useState('#863bff');
+    const [showAddExerciseModal, setShowAddExerciseModal] = useState(false);
+    const [addExerciseSearch, setAddExerciseSearch] = useState('');
+
+    const defaultRoutinesList = useMemo(() => [
+        { id: 'A', name: 'Treino A (Peito/Tríceps)', label: 'Treino A', color: '#ef4444', dotClass: 'dot-a' },
+        { id: 'B', name: 'Treino B (Costas/Bíceps)', label: 'Treino B', color: '#3b82f6', dotClass: 'dot-b' },
+        { id: 'C', name: 'Treino C (Pernas)', label: 'Treino C', color: '#10b981', dotClass: 'dot-c' },
+        { id: 'D', name: 'Treino D (Ombros/Core)', label: 'Treino D', color: '#f59e0b', dotClass: 'dot-d' }
+    ], []);
+
+    const allRoutines = useMemo(() => {
+        const custom = Array.isArray(userData?.customRoutines) ? userData.customRoutines : [];
+        return [...defaultRoutinesList, ...custom];
+    }, [defaultRoutinesList, userData?.customRoutines]);
+
+    const handleCreateRoutine = (e) => {
+        e.preventDefault();
+        if (!newRoutineName.trim()) return;
+        const newId = 'rot_' + Date.now();
+        const newRot = {
+            id: newId,
+            name: newRoutineName.trim(),
+            label: newRoutineName.trim().substring(0, 15),
+            color: newRoutineColor,
+            isCustom: true
+        };
+        const currentCustom = Array.isArray(userData?.customRoutines) ? userData.customRoutines : [];
+        syncData({
+            customRoutines: [...currentCustom, newRot]
+        });
+        showNotification(`Treino "${newRoutineName}" criado com sucesso!`, "success");
+        setNewRoutineName('');
+        setShowCreateRoutineModal(false);
+        setRoutineFilter(newId);
+    };
 
     const handleCreateCustomExercise = (e) => {
         e.preventDefault();
@@ -357,51 +396,138 @@ const Library = () => {
                 </div>
             </div>
 
-            {/* ABAS DE ROTINA RÁPIDA E FAVORITOS (3) */}
+            {/* ABAS DE ROTINA RÁPIDA E FAVORITOS */}
             <div className="routine-filters" style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '16px' }}>
                 <button 
                     className={`btn-secondary ${routineFilter === 'ALL' ? 'active' : ''}`} 
-                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'ALL' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'ALL' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '700', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}
+                    style={{ padding: '8px 16px', fontSize: '0.8rem', width: 'auto', borderRadius: '10px', background: routineFilter === 'ALL' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'ALL' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '700', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s ease' }}
                     onClick={() => { setRoutineFilter('ALL'); setSelectedGroup(null); }}
                 >
                     <span dangerouslySetInnerHTML={{ __html: svgDumbbell }}></span> Todos os Grupos
                 </button>
                 <button 
                     className={`btn-secondary ${routineFilter === 'FAV' ? 'active' : ''}`} 
-                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'FAV' ? '#d4af37' : 'var(--bg-card)', color: routineFilter === 'FAV' ? '#000' : '#d4af37', fontWeight: '700', borderColor: '#d4af37', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}
+                    style={{ padding: '8px 16px', fontSize: '0.8rem', width: 'auto', borderRadius: '10px', background: routineFilter === 'FAV' ? '#d4af37' : 'var(--bg-card)', color: routineFilter === 'FAV' ? '#000' : '#d4af37', fontWeight: '700', borderColor: '#d4af37', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s ease' }}
                     onClick={() => { setRoutineFilter('FAV'); setSelectedGroup(null); }}
                 >
                     <span dangerouslySetInnerHTML={{ __html: svgStar }}></span> Meus Favoritos ({favorites.length})
                 </button>
+                {allRoutines.map(rot => {
+                    const isSel = routineFilter === rot.id;
+                    return (
+                        <button
+                            key={rot.id}
+                            className={`btn-secondary ${isSel ? 'active' : ''}`}
+                            style={{ 
+                                padding: '8px 16px', 
+                                fontSize: '0.8rem', 
+                                width: 'auto', 
+                                borderRadius: '10px', 
+                                background: isSel ? (rot.color || 'var(--text-main)') : 'var(--bg-card)', 
+                                color: isSel ? '#000' : 'var(--text-main)', 
+                                fontWeight: '700', 
+                                borderColor: isSel ? rot.color : 'var(--border)',
+                                whiteSpace: 'nowrap', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '8px',
+                                boxShadow: isSel ? `0 0 14px ${rot.color || '#fff'}40` : 'none',
+                                transition: 'all 0.2s ease'
+                            }}
+                            onClick={() => { setRoutineFilter(rot.id); setSelectedGroup(null); }}
+                        >
+                            {rot.dotClass ? (
+                                <span className={`routine-badge-dot ${rot.dotClass}`}></span>
+                            ) : (
+                                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: rot.color || '#863bff', display: 'inline-block' }}></span>
+                            )}
+                            {rot.name}
+                        </button>
+                    );
+                })}
                 <button 
+                    type="button"
                     className="btn-secondary" 
-                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'A' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'A' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}
-                    onClick={() => { setRoutineFilter('A'); setSelectedGroup(null); }}
+                    style={{ padding: '8px 16px', fontSize: '0.8rem', width: 'auto', borderRadius: '10px', background: 'linear-gradient(135deg, rgba(134,59,255,0.2), rgba(212,175,55,0.15))', color: '#d4af37', fontWeight: '800', borderColor: '#d4af37', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', transition: 'all 0.2s ease' }}
+                    onClick={() => setShowCreateRoutineModal(true)}
                 >
-                    <span className="routine-badge-dot dot-a"></span> Treino A (Peito/Tríceps)
-                </button>
-                <button 
-                    className="btn-secondary" 
-                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'B' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'B' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}
-                    onClick={() => { setRoutineFilter('B'); setSelectedGroup(null); }}
-                >
-                    <span className="routine-badge-dot dot-b"></span> Treino B (Costas/Bíceps)
-                </button>
-                <button 
-                    className="btn-secondary" 
-                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'C' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'C' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}
-                    onClick={() => { setRoutineFilter('C'); setSelectedGroup(null); }}
-                >
-                    <span className="routine-badge-dot dot-c"></span> Treino C (Pernas)
-                </button>
-                <button 
-                    className="btn-secondary" 
-                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'D' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'D' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}
-                    onClick={() => { setRoutineFilter('D'); setSelectedGroup(null); }}
-                >
-                    <span className="routine-badge-dot dot-d"></span> Treino D (Ombros/Core)
+                    <Icon svg={svgPlus} size={14} color="#d4af37" /> Criar Meu Treino
                 </button>
             </div>
+            
+            {routineFilter !== 'ALL' && routineFilter !== 'FAV' && (() => {
+                const activeRot = allRoutines.find(r => r.id === routineFilter) || { name: `Treino ${routineFilter}`, color: '#d4af37' };
+                const routineExercisesCount = (selectedGroup ? (selectedGroup.items || []) : filteredGroups.flatMap(g => g.items || [])).filter(Boolean).length;
+                return (
+                    <div className="routine-banner" style={{
+                        background: `linear-gradient(135deg, ${activeRot.color || '#d4af37'}18, rgba(20,20,30,0.8))`,
+                        border: `1px solid ${activeRot.color || '#d4af37'}66`,
+                        borderRadius: '16px',
+                        padding: '20px 24px',
+                        marginBottom: '24px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: '16px',
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.2)'
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                            <div style={{
+                                width: '44px',
+                                height: '44px',
+                                borderRadius: '12px',
+                                background: `${activeRot.color || '#d4af37'}33`,
+                                border: `2px solid ${activeRot.color || '#d4af37'}`,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: activeRot.color || '#d4af37'
+                            }}>
+                                <Icon svg={svgDumbbell} size={24} color={activeRot.color || '#d4af37'} />
+                            </div>
+                            <div>
+                                <h3 style={{ margin: 0, fontSize: '1.4rem', fontWeight: '800', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    {activeRot.name}
+                                    {activeRot.isCustom && (
+                                        <span style={{ fontSize: '0.7rem', background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '10px', color: 'var(--text-muted)' }}>Personalizado</span>
+                                    )}
+                                </h3>
+                                <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                    {routineExercisesCount} exercícios vinculados a esta ficha de treino.
+                                </p>
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                            <button
+                                type="button"
+                                className="btn-secondary"
+                                onClick={() => setShowAddExerciseModal(true)}
+                                style={{ padding: '8px 16px', fontSize: '0.85rem', background: '#10b981', color: '#000', fontWeight: '800', border: 'none', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(16,185,129,0.3)', cursor: 'pointer' }}
+                            >
+                                <Icon svg={svgPlus} size={16} color="#000" /> Adicionar Exercícios
+                            </button>
+                            {activeRot.isCustom && (
+                                <button
+                                    type="button"
+                                    className="btn-secondary"
+                                    onClick={() => {
+                                        if (window.confirm(`Tem certeza que deseja excluir a rotina "${activeRot.name}"? Os exercícios retornarão às categorias padrão.`)) {
+                                            const remaining = (userData?.customRoutines || []).filter(r => r.id !== activeRot.id);
+                                            syncData({ customRoutines: remaining });
+                                            setRoutineFilter('ALL');
+                                            showNotification("Rotina excluída.", "info");
+                                        }
+                                    }}
+                                    style={{ padding: '8px 12px', fontSize: '0.8rem', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '10px', fontWeight: '700', cursor: 'pointer' }}
+                                >
+                                    Excluir Rotina
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                );
+            })()}
             
             <div id="exercise-library" className="exercise-library">
                 {!selectedGroup && routineFilter === 'ALL' ? (
@@ -563,32 +689,33 @@ const Library = () => {
                                 <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span dangerouslySetInnerHTML={{ __html: svgTarget }}></span> Em qual Ficha/Treino este exercício entra?</span>
                                 <span style={{ fontSize: '0.7rem', color: '#d4af37' }}>Personalizável</span>
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
-                                {['A', 'B', 'C', 'D'].map((rot) => {
-                                    const labels = { A: 'Treino A', B: 'Treino B', C: 'Treino C', D: 'Treino D' };
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '6px' }}>
+                                {allRoutines.map((rot) => {
                                     const currentRot = getExerciseRoutineGroup(selectedExercise, selectedExercise.id, userData?.routineMap);
-                                    const isSel = currentRot === rot;
+                                    const isSel = currentRot === rot.id;
                                     return (
                                         <button
-                                            key={rot}
+                                            key={rot.id}
                                             type="button"
                                             className="btn-secondary"
                                             style={{
-                                                padding: '6px 4px',
+                                                padding: '8px 6px',
                                                 fontSize: '0.75rem',
-                                                borderRadius: '6px',
-                                                background: isSel ? 'var(--text-main)' : 'var(--bg-card)',
-                                                color: isSel ? 'var(--bg-main)' : 'var(--text-main)',
+                                                borderRadius: '8px',
+                                                background: isSel ? (rot.color || 'var(--text-main)') : 'var(--bg-card)',
+                                                color: isSel ? '#000' : 'var(--text-main)',
                                                 fontWeight: isSel ? '700' : '500',
-                                                borderColor: isSel ? 'var(--text-main)' : 'var(--border)'
+                                                borderColor: isSel ? (rot.color || 'var(--text-main)') : 'var(--border)',
+                                                boxShadow: isSel ? `0 0 10px ${rot.color || '#fff'}40` : 'none',
+                                                transition: 'all 0.15s ease'
                                             }}
                                             onClick={() => {
-                                                const newMap = { ...(userData?.routineMap || {}), [selectedExercise.id]: rot };
+                                                const newMap = { ...(userData?.routineMap || {}), [selectedExercise.id]: rot.id };
                                                 syncData({ routineMap: newMap });
-                                                showNotification(`Atribuído ao Treino ${rot}!`, "info");
+                                                showNotification(`Atribuído a ${rot.name}!`, "info");
                                             }}
                                         >
-                                            {labels[rot]}
+                                            {rot.label || rot.name}
                                         </button>
                                     );
                                 })}
@@ -787,29 +914,24 @@ const Library = () => {
                             </div>
                             <div className="input-group">
                                 <label>Ficha / Treino Padrão</label>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
-                                    {[
-                                        { id: 'A', label: 'Treino A' },
-                                        { id: 'B', label: 'Treino B' },
-                                        { id: 'C', label: 'Treino C' },
-                                        { id: 'D', label: 'Treino D' }
-                                    ].map(item => (
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '6px' }}>
+                                    {allRoutines.map(item => (
                                         <button
                                             key={item.id}
                                             type="button"
                                             className="btn-secondary"
                                             style={{
-                                                padding: '8px 4px',
+                                                padding: '8px 6px',
                                                 fontSize: '0.75rem',
-                                                borderRadius: '6px',
-                                                background: customRoutine === item.id ? 'var(--text-main)' : 'var(--bg-card)',
-                                                color: customRoutine === item.id ? 'var(--bg-main)' : 'var(--text-main)',
+                                                borderRadius: '8px',
+                                                background: customRoutine === item.id ? (item.color || 'var(--text-main)') : 'var(--bg-card)',
+                                                color: customRoutine === item.id ? '#000' : 'var(--text-main)',
                                                 fontWeight: customRoutine === item.id ? '700' : '500',
-                                                borderColor: customRoutine === item.id ? 'var(--text-main)' : 'var(--border)'
+                                                borderColor: customRoutine === item.id ? (item.color || 'var(--text-main)') : 'var(--border)'
                                             }}
                                             onClick={() => setCustomRoutine(item.id)}
                                         >
-                                            {item.label}
+                                            {item.label || item.name}
                                         </button>
                                     ))}
                                 </div>
@@ -821,6 +943,159 @@ const Library = () => {
                     </div>
                 </div>
             )}
+
+            {/* MODAL DE CRIAR NOVO TREINO / ROTINA */}
+            {showCreateRoutineModal && (
+                <div className="modal-overlay active" onClick={() => setShowCreateRoutineModal(false)}>
+                    <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '440px', background: 'linear-gradient(145deg, var(--bg-card) 0%, rgba(20, 20, 25, 0.98) 100%)', border: '1px solid #d4af37', borderRadius: '20px', padding: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
+                            <h3 style={{ margin: 0, fontSize: '1.3rem', fontWeight: '800', color: '#d4af37', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <Icon svg={svgDumbbell} size={20} color="#d4af37" /> Criar Meu Treino
+                            </h3>
+                            <button type="button" className="btn-close" onClick={() => setShowCreateRoutineModal(false)}>✕</button>
+                        </div>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '20px', lineHeight: 1.4 }}>
+                            Crie uma ficha de treino exclusiva com as cores e nomes da sua preferência para organizar sua semana.
+                        </p>
+                        <form onSubmit={handleCreateRoutine}>
+                            <div className="input-group">
+                                <label style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-main)', marginBottom: '6px', display: 'block' }}>Nome do Treino / Rotina</label>
+                                <input 
+                                    type="text" 
+                                    required 
+                                    placeholder="Ex: Treino E (Glúteos), Sábado Pesado, Braço Insano..." 
+                                    value={newRoutineName}
+                                    onChange={(e) => setNewRoutineName(e.target.value)}
+                                    style={{ width: '100%', padding: '12px', background: 'var(--bg-main)', color: 'var(--text-main)', border: '1px solid var(--border)', borderRadius: '10px', fontSize: '0.95rem', fontWeight: '600' }}
+                                />
+                            </div>
+                            <div className="input-group" style={{ marginTop: '16px' }}>
+                                <label style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-main)', marginBottom: '8px', display: 'block' }}>Cor do Treino (Destaque visual)</label>
+                                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                                    {[
+                                        { color: '#ef4444', name: 'Vermelho' },
+                                        { color: '#3b82f6', name: 'Azul' },
+                                        { color: '#10b981', name: 'Verde' },
+                                        { color: '#f59e0b', name: 'Laranja' },
+                                        { color: '#d4af37', name: 'Dourado' },
+                                        { color: '#863bff', name: 'Roxo' },
+                                        { color: '#ec4899', name: 'Rosa' },
+                                        { color: '#06b6d4', name: 'Ciano' }
+                                    ].map(c => (
+                                        <button
+                                            key={c.color}
+                                            type="button"
+                                            onClick={() => setNewRoutineColor(c.color)}
+                                            style={{
+                                                width: '34px',
+                                                height: '34px',
+                                                borderRadius: '50%',
+                                                background: c.color,
+                                                border: newRoutineColor === c.color ? '3px solid #fff' : '2px solid transparent',
+                                                cursor: 'pointer',
+                                                boxShadow: newRoutineColor === c.color ? `0 0 12px ${c.color}` : 'none',
+                                                transition: 'transform 0.15s ease',
+                                                transform: newRoutineColor === c.color ? 'scale(1.15)' : 'scale(1)'
+                                            }}
+                                            title={c.name}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                            <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '24px', padding: '14px', background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#000', fontWeight: '800', fontSize: '1rem', borderRadius: '12px', border: 'none', cursor: 'pointer', boxShadow: '0 8px 20px rgba(212, 175, 55, 0.3)' }}>
+                                Criar e Acessar Ficha de Treino
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL DE ADICIONAR EXERCÍCIOS AO TREINO ATUAL */}
+            {showAddExerciseModal && (() => {
+                const activeRot = allRoutines.find(r => r.id === routineFilter) || { name: `Treino ${routineFilter}`, color: '#d4af37', id: routineFilter };
+                const allExercisesList = (allExercisesDB || []).flatMap(g => g.items || []).filter(Boolean);
+                const filteredList = addExerciseSearch ? allExercisesList.filter(ex => (ex.name || '').toLowerCase().includes(addExerciseSearch.toLowerCase()) || (ex.group || '').toLowerCase().includes(addExerciseSearch.toLowerCase())) : allExercisesList;
+
+                return (
+                    <div className="modal-overlay active" onClick={() => setShowAddExerciseModal(false)}>
+                        <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px', width: '90%', maxHeight: '85vh', display: 'flex', flexDirection: 'column', background: 'linear-gradient(145deg, var(--bg-card) 0%, rgba(20, 20, 25, 0.98) 100%)', border: `1px solid ${activeRot.color || '#d4af37'}`, borderRadius: '20px', padding: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '12px', flexShrink: 0 }}>
+                                <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '800', color: activeRot.color || '#d4af37', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <Icon svg={svgDumbbell} size={20} color={activeRot.color || '#d4af37'} /> Adicionar a: {activeRot.name}
+                                </h3>
+                                <button type="button" className="btn-close" onClick={() => setShowAddExerciseModal(false)}>✕</button>
+                            </div>
+                            <div style={{ marginBottom: '16px', flexShrink: 0 }}>
+                                <input
+                                    type="text"
+                                    placeholder="Buscar por nome ou músculo (ex: supino, peito...)"
+                                    value={addExerciseSearch}
+                                    onChange={(e) => setAddExerciseSearch(e.target.value)}
+                                    className="search-input"
+                                    style={{ width: '100%', padding: '12px', background: 'var(--bg-main)', color: 'var(--text-main)', border: '1px solid var(--border)', borderRadius: '10px' }}
+                                />
+                            </div>
+                            <div style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '6px' }}>
+                                {filteredList.length === 0 ? (
+                                    <p style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '20px' }}>Nenhum exercício encontrado.</p>
+                                ) : (
+                                    filteredList.map(ex => {
+                                        const currentRotId = getExerciseRoutineGroup(ex, ex.id, userData?.routineMap);
+                                        const isIncluded = currentRotId === activeRot.id;
+                                        const currentRotObj = allRoutines.find(r => r.id === currentRotId);
+
+                                        return (
+                                            <div key={ex.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: isIncluded ? `${activeRot.color || '#10b981'}15` : 'var(--bg-main)', border: `1px solid ${isIncluded ? activeRot.color : 'var(--border)'}`, borderRadius: '12px', gap: '12px', transition: 'all 0.15s ease' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', overflow: 'hidden' }}>
+                                                    <img src={ex.img} alt={ex.name} style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover', background: '#000', flexShrink: 0 }} />
+                                                    <div style={{ overflow: 'hidden' }}>
+                                                        <div style={{ fontWeight: '700', fontSize: '0.95rem', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ex.name}</div>
+                                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{ex.group} {currentRotObj && !isIncluded && `• Atual: ${currentRotObj.label || currentRotObj.name}`}</div>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newMap = { ...(userData?.routineMap || {}) };
+                                                        if (isIncluded) {
+                                                            delete newMap[ex.id];
+                                                        } else {
+                                                            newMap[ex.id] = activeRot.id;
+                                                        }
+                                                        syncData({ routineMap: newMap });
+                                                    }}
+                                                    style={{
+                                                        padding: '6px 14px',
+                                                        borderRadius: '8px',
+                                                        fontSize: '0.8rem',
+                                                        fontWeight: '800',
+                                                        background: isIncluded ? (activeRot.color || '#10b981') : 'var(--bg-card)',
+                                                        color: isIncluded ? '#000' : 'var(--text-main)',
+                                                        border: `1px solid ${isIncluded ? activeRot.color : 'var(--border)'}`,
+                                                        cursor: 'pointer',
+                                                        flexShrink: 0,
+                                                        transition: 'all 0.15s ease',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '6px'
+                                                    }}
+                                                >
+                                                    {isIncluded ? '✓ Adicionado' : '+ Adicionar'}
+                                                </button>
+                                            </div>
+                                        );
+                                    })
+                                )}
+                            </div>
+                            <div style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px solid var(--border)', textAlign: 'right', flexShrink: 0 }}>
+                                <button type="button" className="btn-primary" onClick={() => setShowAddExerciseModal(false)} style={{ padding: '10px 24px', width: 'auto', background: activeRot.color || '#d4af37', color: '#000', fontWeight: '800', borderRadius: '10px' }}>
+                                    Concluir e Ver Ficha
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })()}
         </section>
     );
 };

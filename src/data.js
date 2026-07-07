@@ -49,16 +49,16 @@ export const formatElapsed = (totalSeconds) => {
 
 // RANKS COM CORES DISCRETAS, METÁLICAS E PROFISSIONAIS
 export const ranks = [
-    { name: "Bronze", threshold: 0, icon: svgStar, color: "#a17a52", desc: "Início da jornada na musculação. O hábito diário supera a motivação." },
-    { name: "Prata", threshold: 100, icon: svgShield, color: "#94a3b8", desc: "Consistência comprovada. Primeiros ganhos de força e técnica estabelecidos." },
-    { name: "Ferro", threshold: 170, icon: svgShield, color: "#64748b", desc: "Sólido como ferro. Resistência física e disciplina temperadas com suor e esforço." },
-    { name: "Ouro", threshold: 250, icon: svgCrown, color: "#d4af37", desc: "Foco de ferro. A rotina de treinos já faz parte integral do seu estilo de vida." },
-    { name: "Platina", threshold: 450, icon: svgDiamond, color: "#94a3b8", desc: "Força superior. Suas cargas de trabalho começam a se destacar na academia." },
-    { name: "Diamante", threshold: 700, icon: svgGem, color: "#cbd5e1", desc: "Atleta dedicado. Disciplina técnica inabalável e alto volume de treino." },
-    { name: "Chad", threshold: 1000, icon: svgDumbbell, color: "#94a3b8", desc: "Força de elite. Referência de execução perfeita e constância atlética." },
-    { name: "GigaChad", threshold: 1300, icon: svgBiceps, color: "#cbd5e1", desc: "Vanguardista do ferro. Domínio absoluto de sobrecarga progressiva." },
-    { name: "Monster", threshold: 1800, icon: svgFlame, color: "#e2e8f0", desc: "Puro poder. Uma máquina imparável de superar limites e bater recordes." },
-    { name: "Absolute", threshold: 2500, icon: svgLightning, color: "#ffffff", desc: "Lenda imortal. O ápice da força física, disciplina e excelência na musculação." }
+    { name: "Bronze", threshold: 0, icon: svgStar, color: "#a17a52", image: "/bronze.png", desc: "Início da jornada na musculação. O hábito diário supera a motivação." },
+    { name: "Prata", threshold: 100, icon: svgShield, color: "#94a3b8", image: "/prata.png", desc: "Consistência comprovada. Primeiros ganhos de força e técnica estabelecidos." },
+    { name: "Ferro", threshold: 170, icon: svgShield, color: "#64748b", image: "/ferro.png", desc: "Sólido como ferro. Resistência física e disciplina temperadas com suor e esforço." },
+    { name: "Ouro", threshold: 250, icon: svgCrown, color: "#d4af37", image: "/ouro.png", desc: "Foco de ferro. A rotina de treinos já faz parte integral do seu estilo de vida." },
+    { name: "Platina", threshold: 450, icon: svgDiamond, color: "#94a3b8", image: "/platina.png", desc: "Força superior. Suas cargas de trabalho começam a se destacar na academia." },
+    { name: "Diamante", threshold: 700, icon: svgGem, color: "#cbd5e1", image: "/diamante.png", desc: "Atleta dedicado. Disciplina técnica inabalável e alto volume de treino." },
+    { name: "Chad", threshold: 1000, icon: svgDumbbell, color: "#94a3b8", image: "/chad.png", desc: "Força de elite. Referência de execução perfeita e constância atlética." },
+    { name: "GigaChad", threshold: 1300, icon: svgBiceps, color: "#cbd5e1", image: "/gigachad.png", desc: "Vanguardista do ferro. Domínio absoluto de sobrecarga progressiva." },
+    { name: "Monster", threshold: 1800, icon: svgFlame, color: "#e2e8f0", image: "/monster.png", desc: "Puro poder. Uma máquina imparável de superar limites e bater recordes." },
+    { name: "Absolute", threshold: 2500, icon: svgLightning, color: "#ffffff", image: "/absolute.png", desc: "Lenda imortal. O ápice da força física, disciplina e excelência na musculação." }
 ];
 
 // GERADOR DE CARDS MINIMALISTAS E PROFISSIONAIS (TOM SLATE/CHARCOAL COM ACENTO SUAVE)

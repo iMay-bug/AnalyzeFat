@@ -3,6 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import { ranks, getCurrentRankInfo, getFeedSummaryStats, svgWeight, svgClock, svgFlame, svgTrophy, svgCheck } from '../data';
 import Icon from './Icon';
 import AnimatedCounter from './AnimatedCounter';
+import RankImage from './RankImage';
 
 const Path = () => {
     const { userData } = useContext(AuthContext);
@@ -122,8 +123,8 @@ const Path = () => {
                             ref={isCurrent ? currentRankRef : null}
                         >
                             <div className="path-node-content" style={{ transform: `translateX(calc(-50% + ${xOffset}px))` }}>
-                                <div className={nodeClass} style={isUnlocked ? { borderColor: rank.color } : {}}>
-                                    <div className="node-icon" style={isUnlocked ? { color: rank.color } : {}} dangerouslySetInnerHTML={{ __html: rank.icon }}></div>
+                                <div className={nodeClass} style={isUnlocked ? { borderColor: rank.color, display: 'flex', alignItems: 'center', justifyContent: 'center' } : { display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <RankImage rank={rank} size={36} isUnlocked={isUnlocked} />
                                 </div>
                                 <div className="path-label" style={isCurrent ? { color: 'var(--text-main)' } : {}}>
                                     {rank.name}<br />

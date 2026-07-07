@@ -3,6 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import { getCurrentRankInfo, svgTrophy, svgFlame, svgCalendar, svgTrending, svgScale, svgLock, svgCheck, svgAlert, svgStar, svgTarget, svgBox, svgCamera, getConsistencyStats, getUnlockedBadges, getWeeklyMuscleBalance, getWeeklyTonnage, getRelativeStrengthStatus, getHypertrophyZoneInfo, generateWorkoutSummary, getMonthlyVolumeTimeline } from '../data';
 import Icon from './Icon';
 import AnimatedCounter from './AnimatedCounter';
+import RankImage from './RankImage';
 
 const Profile = ({ onLogout }) => {
     const { userData, syncData, showNotification, activeSession, sessionElapsed } = useContext(AuthContext);
@@ -30,48 +31,22 @@ const Profile = ({ onLogout }) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 200;
-                    const MAX_HEIGHT = 200;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
-                    canvas.width = width;
-                    canvas.height = height;
-
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                    syncData({ profileImg: dataUrl });
-                    showNotification("Foto de perfil atualizada com sucesso!", "success");
-                };
-                img.src = event.target.result;
+            reader.onloadend = () => {
+                syncData({ profileImg: reader.result });
+                showNotification("Foto de perfil atualizada!", "success");
             };
             reader.readAsDataURL(file);
         }
     };
 
-    const totalPRs = Object.keys(userData?.prs || {}).length;
+    const totalPRs = (userData?.feed || []).reduce((acc, s) => {
+        return acc + (s.exercises || []).filter(ex => ex.isPR || ex.isVolumePR).length;
+    }, 0);
 
     const handleCopySummary = () => {
-        const text = generateWorkoutSummary(userData, activeSession, sessionElapsed);
-        navigator.clipboard.writeText(text);
-        showNotification("Resumo copiado! Prontinho para colar no WhatsApp/Instagram", "success");
+        const summaryText = generateWorkoutSummary(userData?.feed || []);
+        navigator.clipboard.writeText(summaryText);
+        showNotification("Resumo copiado para a área de transferência! Prontinho para o WhatsApp 🏋️‍♂️", "success");
     };
 
     return (
@@ -194,9 +169,9 @@ const Profile = ({ onLogout }) => {
                             letterSpacing: '0.5px',
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: '6px'
+                            gap: '8px'
                         }}>
-                            <Icon svg={svgTrophy} size={14} color={currentRank?.color || '#fff'} />
+                            <RankImage rank={currentRank} size={18} isUnlocked={true} />
                             PATENTE: {currentRankName.toUpperCase()}
                         </span>
 

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { ranks, getCurrentRankInfo, svgCheck, svgLightning, svgLock } from '../data';
 import Icon from './Icon';
+import RankImage from './RankImage';
 
 const Roadmap = () => {
     const { userData } = useContext(AuthContext);
@@ -74,18 +75,10 @@ const Roadmap = () => {
                             
                             <div className="roadmap-card">
                                 <div className="roadmap-header">
-                                    <div className="roadmap-title">
-                                        <span 
-                                            style={{ 
-                                                width: '10px', 
-                                                height: '10px', 
-                                                borderRadius: '50%', 
-                                                backgroundColor: rank.color,
-                                                display: 'inline-block'
-                                            }} 
-                                        />
-                                        <span>{rank.name}</span>
-                                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '500' }}>
+                                    <div className="roadmap-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <RankImage rank={rank} size={32} isUnlocked={isUnlocked} />
+                                        <span style={{ fontSize: '1.1rem', fontWeight: '800', color: isUnlocked ? 'var(--text-main)' : 'var(--text-muted)' }}>{rank.name}</span>
+                                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '12px' }}>
                                             {rank.threshold} XP
                                         </span>
                                     </div>
