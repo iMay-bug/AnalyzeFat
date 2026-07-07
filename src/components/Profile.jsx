@@ -1,6 +1,6 @@
 import React, { useContext, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { getCurrentRankInfo, svgTrophy, svgFlame, svgCalendar, svgTrending, svgScale, svgLock, svgCheck, svgAlert, getConsistencyStats, getUnlockedBadges, getWeeklyMuscleBalance, getWeeklyTonnage, getRelativeStrengthStatus, getHypertrophyZoneInfo, generateWorkoutSummary, getMonthlyVolumeTimeline } from '../data';
+import { getCurrentRankInfo, svgTrophy, svgFlame, svgCalendar, svgTrending, svgScale, svgLock, svgCheck, svgAlert, svgStar, svgTarget, svgBox, svgCamera, getConsistencyStats, getUnlockedBadges, getWeeklyMuscleBalance, getWeeklyTonnage, getRelativeStrengthStatus, getHypertrophyZoneInfo, generateWorkoutSummary, getMonthlyVolumeTimeline } from '../data';
 import Icon from './Icon';
 import AnimatedCounter from './AnimatedCounter';
 
@@ -70,7 +70,7 @@ const Profile = ({ onLogout }) => {
     const handleCopySummary = () => {
         const text = generateWorkoutSummary(userData, activeSession, sessionElapsed);
         navigator.clipboard.writeText(text);
-        showNotification("📋 Resumo copiado! Prontinho para colar no WhatsApp/Instagram 🚀", "success");
+        showNotification("Resumo copiado! Prontinho para colar no WhatsApp/Instagram", "success");
     };
 
     return (
@@ -83,7 +83,7 @@ const Profile = ({ onLogout }) => {
                     onClick={handleCopySummary}
                     style={{ padding: '8px 16px', fontSize: '0.85rem', width: 'auto', borderRadius: '8px', borderColor: '#10b981', color: '#10b981', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
-                    📋 Copiar Resumo para WhatsApp
+                    <span dangerouslySetInnerHTML={{ __html: svgBox }} style={{ display: 'inline-flex', alignItems: 'center' }}></span> Copiar Resumo para WhatsApp
                 </button>
             </div>
             
@@ -98,8 +98,7 @@ const Profile = ({ onLogout }) => {
                         src={userData?.profileImg || defaultProfileSVG} 
                         alt="Profile" 
                     />
-                    <div className="profile-upload-btn" title="Alterar foto">
-                        📷
+                    <div className="profile-upload-btn" title="Alterar foto" dangerouslySetInnerHTML={{ __html: svgCamera }}>
                     </div>
                     <input 
                         type="file" 
@@ -308,7 +307,7 @@ const Profile = ({ onLogout }) => {
                         <div key={idx}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '4px' }}>
                                 <span style={{ color: 'var(--text-main)', fontWeight: w.isPeak ? '700' : '500' }}>
-                                    {w.label} {w.isPeak && <span style={{ color: '#d4af37', fontSize: '0.7rem' }}>★ Pico</span>}
+                                    {w.label} {w.isPeak && <span style={{ color: '#d4af37', fontSize: '0.7rem' }}><span dangerouslySetInnerHTML={{ __html: svgStar }} style={{ display: 'inline-flex', verticalAlign: 'middle', marginRight: '2px' }}></span> Pico</span>}
                                 </span>
                                 <span style={{ fontWeight: '700', color: w.isPeak ? '#d4af37' : 'var(--text-main)' }}>
                                     {w.totalKg.toLocaleString('pt-BR')} kg
@@ -331,16 +330,16 @@ const Profile = ({ onLogout }) => {
             <div className="tonnage-challenge-section" style={{ marginTop: '32px', background: 'var(--bg-card)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                     <div>
-                        <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-main)', margin: 0 }}>
-                            🎯 Desafio Semanal de Tonelagem
+                        <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-main)', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span dangerouslySetInnerHTML={{ __html: svgTarget }} style={{ display: 'inline-flex' }}></span> Desafio Semanal de Tonelagem
                         </h3>
                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '4px 0 0 0' }}>
                             Levante 20.000 kg ao longo de 7 dias
                         </p>
                     </div>
                     {tonnage.isCompleted ? (
-                        <span style={{ background: 'var(--text-main)', color: 'var(--bg-main)', padding: '4px 10px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '800' }}>
-                            🏆 META!
+                        <span style={{ background: 'var(--text-main)', color: 'var(--bg-main)', padding: '4px 10px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '800', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <span dangerouslySetInnerHTML={{ __html: svgTrophy }} style={{ display: 'inline-flex' }}></span> META!
                         </span>
                     ) : (
                         <span style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-main)' }}>

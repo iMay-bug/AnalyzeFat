@@ -271,7 +271,7 @@ export const AuthProvider = ({ children }) => {
 
     const startRestTimer = (seconds) => {
         setRestTimer({ secondsLeft: seconds, totalSeconds: seconds, active: true });
-        showNotification(`⏱️ Descanso de ${seconds}s iniciado.`, 'info');
+        showNotification(`Descanso de ${seconds}s iniciado.`, 'info');
     };
 
     const stopRestTimer = () => {

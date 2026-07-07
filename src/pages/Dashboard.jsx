@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, Suspense, lazy } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { svgMoon, svgSun, svgActivity, svgClock, svgStop, getConsistencyStats, formatElapsed } from '../data';
+import { svgMoon, svgSun, svgActivity, svgClock, svgStop, svgFlame, svgLightning, getConsistencyStats, formatElapsed } from '../data';
 import Icon from '../components/Icon';
 
-import Path from '../components/Path';
-import Roadmap from '../components/Roadmap';
-import Library from '../components/Library';
-import Profile from '../components/Profile';
+const Path = lazy(() => import('../components/Path'));
+const Roadmap = lazy(() => import('../components/Roadmap'));
+const Library = lazy(() => import('../components/Library'));
+const Profile = lazy(() => import('../components/Profile'));
 
 const Dashboard = () => {
     const { activeUser, userData, logout, activeSession, restTimer, sessionElapsed, endSession } = useContext(AuthContext);
@@ -56,7 +56,7 @@ const Dashboard = () => {
                         fontWeight: '600',
                         color: 'var(--text-main)'
                     }} title="Dias consecutivos treinados">
-                        🔥 {consistency.streak} <span style={{ color: 'var(--text-muted)', fontWeight: '500', fontSize: '0.75rem' }}>{consistency.streak === 1 ? 'dia' : 'dias'}</span>
+                        <span dangerouslySetInnerHTML={{ __html: svgFlame }} style={{ display: 'inline-flex', alignItems: 'center' }}></span> {consistency.streak} <span style={{ color: 'var(--text-muted)', fontWeight: '500', fontSize: '0.75rem' }}>{consistency.streak === 1 ? 'dia' : 'dias'}</span>
                     </div>
                     <div style={{ 
                         background: 'var(--bg-card)', 
@@ -70,7 +70,7 @@ const Dashboard = () => {
                         fontWeight: '600',
                         color: 'var(--text-main)'
                     }} title="Seu XP Total na Liga">
-                        ⚡ {xp} <span style={{ color: 'var(--text-muted)', fontWeight: '500', fontSize: '0.75rem' }}>XP</span>
+                        <span dangerouslySetInnerHTML={{ __html: svgLightning }} style={{ display: 'inline-flex', alignItems: 'center' }}></span> {xp} <span style={{ color: 'var(--text-muted)', fontWeight: '500', fontSize: '0.75rem' }}>XP</span>
                     </div>
                     <button 
                         id="theme-toggle" 
@@ -83,10 +83,12 @@ const Dashboard = () => {
             </nav>
 
             <main className="app-content">
-                {currentTab === 'view-path' && <Path />}
-                {currentTab === 'view-roadmap' && <Roadmap />}
-                {currentTab === 'view-workouts' && <Library />}
-                {currentTab === 'view-profile' && <Profile onLogout={logout} />}
+                <Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Carregando...</div>}>
+                    {currentTab === 'view-path' && <Path />}
+                    {currentTab === 'view-roadmap' && <Roadmap />}
+                    {currentTab === 'view-workouts' && <Library />}
+                    {currentTab === 'view-profile' && <Profile onLogout={logout} />}
+                </Suspense>
             </main>
 
             {/* MINI-PLAYER FIXO DE TREINO AO VIVO (STICKY WORKOUT BAR) */}

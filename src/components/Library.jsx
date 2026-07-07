@@ -1,6 +1,6 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { exercisesDB, formatElapsed, calculate1RM, getExerciseHistory, calculatePlates, getExerciseRoutineGroup, getWeeklyTonnage, svgLightning, svgBox, svgSearch } from '../data';
+import { exercisesDB, formatElapsed, calculate1RM, getExerciseHistory, calculatePlates, getExerciseRoutineGroup, getWeeklyTonnage, svgLightning, svgBox, svgSearch, svgActivity, svgClock, svgStop, svgStar, svgTarget, svgTrending, svgDumbbell, svgFlame, svgBiceps } from '../data';
 import Icon from './Icon';
 
 const Library = () => {
@@ -37,7 +37,7 @@ const Library = () => {
             routineMap: { ...currentRoutineMap, [newId]: customRoutine },
             favorites: [...currentFavs, newId]
         });
-        showNotification(`💪 Exercício "${customName}" criado e adicionado ao Treino ${customRoutine}!`, "success");
+        showNotification(`Exercício "${customName}" criado e adicionado ao Treino ${customRoutine}!`, "success");
         setCustomName('');
         setShowCustomModal(false);
     };
@@ -68,7 +68,7 @@ const Library = () => {
         const exists = favorites.includes(exId);
         const newFavs = exists ? favorites.filter(id => id !== exId) : [...favorites, exId];
         syncData({ favorites: newFavs });
-        showNotification(exists ? "Removido dos favoritos." : "★ Adicionado aos favoritos!", "info");
+        showNotification(exists ? "Removido dos favoritos." : "Adicionado aos favoritos!", "info");
     };
 
     const openModal = (ex) => {
@@ -143,12 +143,12 @@ const Library = () => {
         }
 
         showRewardModal({
-            title: extraBonus > 0 ? "🏆 DESAFIO SEMANAL BATIDO!" : (isPR ? "NOVO RECORDE PESSOAL" : "SÉRIE CONCLUÍDA"),
+            title: extraBonus > 0 ? "DESAFIO SEMANAL BATIDO!" : (isPR ? "NOVO RECORDE PESSOAL" : "SÉRIE CONCLUÍDA"),
             xpGained: xpGained,
             isPR: isPR || extraBonus > 0,
             exerciseName: `${selectedExercise.name} (${w}kg × ${r} reps)${extraBonus > 0 ? " • +50 XP Tonelagem" : ""}`
         });
-        showNotification(extraBonus > 0 ? `🏆 Desafio Concluído! +${xpGained} XP registrado!` : `+${xpGained} XP registrado com sucesso.`, 'success');
+        showNotification(extraBonus > 0 ? `Desafio Concluído! +${xpGained} XP registrado!` : `+${xpGained} XP registrado com sucesso.`, 'success');
 
         closeModal();
     };
@@ -201,7 +201,7 @@ const Library = () => {
             }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span style={{ fontSize: '1.2rem' }}>{activeSession ? '🟢' : '⚡'}</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center' }} dangerouslySetInnerHTML={{ __html: activeSession ? svgActivity : svgLightning }}></span>
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                                 <strong style={{ fontSize: '0.95rem', color: 'var(--text-main)' }}>
@@ -217,7 +217,7 @@ const Library = () => {
                                         fontWeight: '800',
                                         fontFamily: 'monospace'
                                     }}>
-                                        ⏱️ {formatElapsed(sessionElapsed)}
+                                        <span dangerouslySetInnerHTML={{ __html: svgClock }} style={{ display: 'inline-flex', alignItems: 'center', marginRight: '4px' }}></span>{formatElapsed(sessionElapsed)}
                                     </span>
                                 )}
                             </div>
@@ -236,15 +236,15 @@ const Library = () => {
                                 style={{ padding: '8px 16px', fontSize: '0.85rem', width: 'auto', borderColor: '#ef4444', color: '#ef4444' }}
                                 onClick={endSession}
                             >
-                                ⏹️ Finalizar Sessão
+                                <span dangerouslySetInnerHTML={{ __html: svgStop }} style={{ display: 'inline-flex', alignItems: 'center', marginRight: '4px' }}></span> Finalizar Sessão
                             </button>
                         ) : (
                             <button 
                                 className="btn-primary" 
-                                style={{ padding: '8px 16px', fontSize: '0.85rem', width: 'auto' }}
+                                style={{ padding: '8px 16px', fontSize: '0.85rem', width: 'auto', display: 'flex', alignItems: 'center', gap: '6px' }}
                                 onClick={startSession}
                             >
-                                ▶️ Iniciar Sessão de Hoje
+                                <span dangerouslySetInnerHTML={{ __html: svgPlay }}></span> Iniciar Sessão de Hoje
                             </button>
                         )}
                     </div>
@@ -261,8 +261,8 @@ const Library = () => {
                     gap: '10px' 
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: '600' }}>
-                            ⏱️ Descanso entre séries:
+                        <span style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <span dangerouslySetInnerHTML={{ __html: svgClock }}></span> Descanso entre séries:
                         </span>
                         {restTimer && restTimer.active ? (
                             <span style={{ 
@@ -320,10 +320,10 @@ const Library = () => {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <button 
                                 className="btn-secondary" 
-                                style={{ padding: '6px 12px', fontSize: '0.85rem', width: 'auto', borderRadius: '8px' }} 
+                                style={{ padding: '6px 12px', fontSize: '0.85rem', width: 'auto', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '6px' }} 
                                 onClick={() => setSelectedGroup(null)}
                             >
-                                ← Voltar
+                                <span dangerouslySetInnerHTML={{ __html: svgBack }}></span> Voltar
                             </button>
                             <span>{selectedGroup.group}</span>
                         </div>
@@ -338,7 +338,7 @@ const Library = () => {
                         style={{ padding: '8px 14px', fontSize: '0.8rem', width: 'auto', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px', background: '#d4af37', color: '#000', fontWeight: '800' }}
                         onClick={() => setShowCustomModal(true)}
                     >
-                        + Criar Meu Exercício
+                        <span dangerouslySetInnerHTML={{ __html: svgPlus }}></span> Criar Meu Exercício
                     </button>
                     <div className="search-input-container" style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
                         <span className="search-icon" style={{ position: 'absolute', left: '10px', display: 'flex', alignItems: 'center' }}><Icon svg={svgSearch} color="var(--text-muted)" size={14} /></span>
@@ -357,45 +357,45 @@ const Library = () => {
             <div className="routine-filters" style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '16px' }}>
                 <button 
                     className={`btn-secondary ${routineFilter === 'ALL' ? 'active' : ''}`} 
-                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'ALL' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'ALL' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '700', whiteSpace: 'nowrap' }}
+                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'ALL' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'ALL' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '700', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}
                     onClick={() => { setRoutineFilter('ALL'); setSelectedGroup(null); }}
                 >
-                    🏋️ Todos os Grupos
+                    <span dangerouslySetInnerHTML={{ __html: svgDumbbell }}></span> Todos os Grupos
                 </button>
                 <button 
                     className={`btn-secondary ${routineFilter === 'FAV' ? 'active' : ''}`} 
-                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'FAV' ? '#d4af37' : 'var(--bg-card)', color: routineFilter === 'FAV' ? '#000' : '#d4af37', fontWeight: '700', borderColor: '#d4af37', whiteSpace: 'nowrap' }}
+                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'FAV' ? '#d4af37' : 'var(--bg-card)', color: routineFilter === 'FAV' ? '#000' : '#d4af37', fontWeight: '700', borderColor: '#d4af37', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}
                     onClick={() => { setRoutineFilter('FAV'); setSelectedGroup(null); }}
                 >
-                    ★ Meus Favoritos ({favorites.length})
+                    <span dangerouslySetInnerHTML={{ __html: svgStar }}></span> Meus Favoritos ({favorites.length})
                 </button>
                 <button 
                     className="btn-secondary" 
-                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'A' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'A' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', whiteSpace: 'nowrap' }}
+                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'A' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'A' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}
                     onClick={() => { setRoutineFilter('A'); setSelectedGroup(null); }}
                 >
-                    🔴 Treino A (Peito/Tríceps)
+                    <span className="routine-badge-dot dot-a"></span> Treino A (Peito/Tríceps)
                 </button>
                 <button 
                     className="btn-secondary" 
-                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'B' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'B' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', whiteSpace: 'nowrap' }}
+                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'B' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'B' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}
                     onClick={() => { setRoutineFilter('B'); setSelectedGroup(null); }}
                 >
-                    🔵 Treino B (Costas/Bíceps)
+                    <span className="routine-badge-dot dot-b"></span> Treino B (Costas/Bíceps)
                 </button>
                 <button 
                     className="btn-secondary" 
-                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'C' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'C' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', whiteSpace: 'nowrap' }}
+                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'C' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'C' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}
                     onClick={() => { setRoutineFilter('C'); setSelectedGroup(null); }}
                 >
-                    🟢 Treino C (Pernas)
+                    <span className="routine-badge-dot dot-c"></span> Treino C (Pernas)
                 </button>
                 <button 
                     className="btn-secondary" 
-                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'D' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'D' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', whiteSpace: 'nowrap' }}
+                    style={{ padding: '6px 14px', fontSize: '0.8rem', width: 'auto', borderRadius: '8px', background: routineFilter === 'D' ? 'var(--text-main)' : 'var(--bg-card)', color: routineFilter === 'D' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}
                     onClick={() => { setRoutineFilter('D'); setSelectedGroup(null); }}
                 >
-                    🟡 Treino D (Ombros/Core)
+                    <span className="routine-badge-dot dot-d"></span> Treino D (Ombros/Core)
                 </button>
             </div>
             
@@ -432,7 +432,7 @@ const Library = () => {
                     <div className="exercise-card-grid">
                         {(selectedGroup ? selectedGroup.items : filteredGroups.flatMap(g => g.items)).length === 0 ? (
                             <p style={{ color: 'var(--text-muted)', gridColumn: '1 / -1', textAlign: 'center', padding: '40px' }}>
-                                {routineFilter === 'FAV' ? 'Nenhum exercício favoritado ainda. Clique na estrela ★ para salvá-los aqui!' : 'Nenhum exercício encontrado.'}
+                                {routineFilter === 'FAV' ? 'Nenhum exercício favoritado ainda. Clique na estrela para salvá-los aqui!' : 'Nenhum exercício encontrado.'}
                             </p>
                         ) : (
                             (selectedGroup ? selectedGroup.items : filteredGroups.flatMap(g => g.items)).map(ex => {
@@ -465,7 +465,7 @@ const Library = () => {
                                                 transition: 'all 0.2s ease'
                                             }}
                                         >
-                                            ★
+                                            <span dangerouslySetInnerHTML={{ __html: svgStar }}></span>
                                         </button>
                                         <img src={ex.img} alt={ex.name} className="exercise-card-img" />
                                         <div className="exercise-card-info" style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -556,12 +556,12 @@ const Library = () => {
                         {/* SELETOR DE TREINO PERSONALIZADO */}
                         <div style={{ background: 'var(--bg-main)', padding: '12px', borderRadius: '8px', marginBottom: '16px', border: '1px solid var(--border)' }}>
                             <div style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-main)', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <span>🎯 Em qual Ficha/Treino este exercício entra?</span>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span dangerouslySetInnerHTML={{ __html: svgTarget }}></span> Em qual Ficha/Treino este exercício entra?</span>
                                 <span style={{ fontSize: '0.7rem', color: '#d4af37' }}>Personalizável</span>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
                                 {['A', 'B', 'C', 'D'].map((rot) => {
-                                    const labels = { A: '🔴 Treino A', B: '🔵 Treino B', C: '🟢 Treino C', D: '🟡 Treino D' };
+                                    const labels = { A: 'Treino A', B: 'Treino B', C: 'Treino C', D: 'Treino D' };
                                     const currentRot = getExerciseRoutineGroup(selectedExercise, selectedExercise.id, userData?.routineMap);
                                     const isSel = currentRot === rot;
                                     return (
@@ -598,20 +598,20 @@ const Library = () => {
                             return (
                                 <div style={{ background: 'var(--bg-main)', padding: '12px', borderRadius: '8px', marginBottom: '16px', border: '1px solid var(--border)' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
-                                        <span style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-main)' }}>
-                                            📈 Memória (Últimos Treinos)
+                                        <span style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <span dangerouslySetInnerHTML={{ __html: svgTrending }}></span> Memória (Últimos Treinos)
                                         </span>
                                         <button 
                                             type="button"
                                             className="btn-secondary" 
-                                            style={{ padding: '4px 10px', fontSize: '0.75rem', width: 'auto', borderColor: '#d4af37', color: '#d4af37', borderRadius: '6px' }}
+                                            style={{ padding: '4px 10px', fontSize: '0.75rem', width: 'auto', borderColor: '#d4af37', color: '#d4af37', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}
                                             onClick={() => {
                                                 setWeight(history[0].weight.toString());
                                                 setReps(history[0].reps.toString());
-                                                showNotification(`⚡ Carga repetida: ${history[0].weight}kg × ${history[0].reps} reps`, 'info');
+                                                showNotification(`Carga repetida: ${history[0].weight}kg × ${history[0].reps} reps`, 'info');
                                             }}
                                         >
-                                            ⚡ Repetir ({history[0].weight}kg × {history[0].reps})
+                                            <span dangerouslySetInnerHTML={{ __html: svgLightning }}></span> Repetir ({history[0].weight}kg × {history[0].reps})
                                         </button>
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -633,8 +633,8 @@ const Library = () => {
                             const maxW = Math.max(...chartItems.map(h => parseFloat(h.weight) || 0));
                             return (
                                 <div style={{ background: 'var(--bg-main)', padding: '12px', borderRadius: '8px', marginBottom: '16px', border: '1px solid var(--border)' }}>
-                                    <div style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-main)', marginBottom: '12px' }}>
-                                        📊 Progressão de Carga (Últimos {chartItems.length} treinos)
+                                    <div style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-main)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <span dangerouslySetInnerHTML={{ __html: svgTrending }}></span> Progressão de Carga (Últimos {chartItems.length} treinos)
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', height: '80px', paddingTop: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '4px', gap: '8px' }}>
                                         {chartItems.map((item, idx) => {
@@ -678,7 +678,7 @@ const Library = () => {
                                 {/* MONTADOR DE ANILHAS DE BARRA (4) */}
                                 {parseFloat(weight) > 20 && (
                                     <div style={{ marginTop: '8px', padding: '8px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: '1px solid var(--border)', fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                                        <span style={{ color: 'var(--text-main)', fontWeight: '600' }}>🏋️ Barra Olímpica (20kg):</span>
+                                        <span style={{ color: 'var(--text-main)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}><span dangerouslySetInnerHTML={{ __html: svgDumbbell }}></span> Barra Olímpica (20kg):</span>
                                         <span>{calculatePlates(weight, 20).message}</span>
                                     </div>
                                 )}
@@ -703,8 +703,8 @@ const Library = () => {
 
                             {/* ESCALA DE INTENSIDADE E FALHA MUSCULAR RPE (3) */}
                             <div className="input-group" style={{ marginBottom: '16px' }}>
-                                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: '600' }}>
-                                    🔥 Esforço e Intensidade (RPE)
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: '600' }}>
+                                    <span dangerouslySetInnerHTML={{ __html: svgFlame }}></span> Esforço e Intensidade (RPE)
                                 </label>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
                                     <button 
@@ -713,7 +713,7 @@ const Library = () => {
                                         style={{ padding: '8px 4px', fontSize: '0.75rem', borderRadius: '8px', background: rpe === 'LIGHT' ? 'var(--text-main)' : 'var(--bg-card)', color: rpe === 'LIGHT' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', borderColor: rpe === 'LIGHT' ? 'var(--text-main)' : 'var(--border)' }}
                                         onClick={() => setRpe('LIGHT')}
                                     >
-                                        🟢 Leve / Controle
+                                        Leve / Controle
                                     </button>
                                     <button 
                                         type="button" 
@@ -721,15 +721,15 @@ const Library = () => {
                                         style={{ padding: '8px 4px', fontSize: '0.75rem', borderRadius: '8px', background: rpe === 'NORMAL' ? 'var(--text-main)' : 'var(--bg-card)', color: rpe === 'NORMAL' ? 'var(--bg-main)' : 'var(--text-main)', fontWeight: '600', borderColor: rpe === 'NORMAL' ? 'var(--text-main)' : 'var(--border)' }}
                                         onClick={() => setRpe('NORMAL')}
                                     >
-                                        🟡 Pesado (RPE 8-9)
+                                        Pesado (RPE 8-9)
                                     </button>
                                     <button 
                                         type="button" 
                                         className="btn-secondary" 
-                                        style={{ padding: '8px 4px', fontSize: '0.75rem', borderRadius: '8px', background: rpe === 'FAIL' ? '#ef4444' : 'var(--bg-card)', color: rpe === 'FAIL' ? '#fff' : '#ef4444', fontWeight: '700', borderColor: '#ef4444' }}
+                                        style={{ padding: '8px 4px', fontSize: '0.75rem', borderRadius: '8px', background: rpe === 'FAIL' ? '#ef4444' : 'var(--bg-card)', color: rpe === 'FAIL' ? '#fff' : '#ef4444', fontWeight: '700', borderColor: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}
                                         onClick={() => setRpe('FAIL')}
                                     >
-                                        🔥 Falha (+2 XP)
+                                        <span dangerouslySetInnerHTML={{ __html: svgFlame }}></span> Falha (+2 XP)
                                     </button>
                                 </div>
                             </div>
@@ -747,8 +747,8 @@ const Library = () => {
                 <div className="modal">
                     <div className="modal-content" style={{ maxWidth: '420px' }}>
                         <button className="close-modal" onClick={() => setShowCustomModal(false)}>×</button>
-                        <h2 style={{ fontSize: '1.25rem', color: 'var(--text-main)', marginBottom: '4px' }}>
-                            💪 Criar Novo Exercício
+                        <h2 style={{ fontSize: '1.25rem', color: 'var(--text-main)', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span dangerouslySetInnerHTML={{ __html: svgBiceps }}></span> Criar Novo Exercício
                         </h2>
                         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
                             Adicione um exercício próprio e escolha em qual ficha de treino ele deve aparecer.
@@ -785,10 +785,10 @@ const Library = () => {
                                 <label>Ficha / Treino Padrão</label>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
                                     {[
-                                        { id: 'A', label: '🔴 Treino A' },
-                                        { id: 'B', label: '🔵 Treino B' },
-                                        { id: 'C', label: '🟢 Treino C' },
-                                        { id: 'D', label: '🟡 Treino D' }
+                                        { id: 'A', label: 'Treino A' },
+                                        { id: 'B', label: 'Treino B' },
+                                        { id: 'C', label: 'Treino C' },
+                                        { id: 'D', label: 'Treino D' }
                                     ].map(item => (
                                         <button
                                             key={item.id}

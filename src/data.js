@@ -25,6 +25,15 @@ export const svgActivity = `<svg width="16" height="16" viewBox="0 0 24 24" fill
 export const svgCheck = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
 export const svgAlert = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
 export const svgWeight = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>`;
+export const svgCamera = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>`;
+export const svgCopy = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+export const svgRocket = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>`;
+export const svgDotRed = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="vertical-align: middle; margin-right: 5px;"><circle cx="6" cy="6" r="5" fill="#FF5E5E"/></svg>`;
+export const svgDotBlue = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="vertical-align: middle; margin-right: 5px;"><circle cx="6" cy="6" r="5" fill="#47BFFF"/></svg>`;
+export const svgDotGreen = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="vertical-align: middle; margin-right: 5px;"><circle cx="6" cy="6" r="5" fill="#2ECC71"/></svg>`;
+export const svgDotYellow = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="vertical-align: middle; margin-right: 5px;"><circle cx="6" cy="6" r="5" fill="#F1C40F"/></svg>`;
+export const svgPlus = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
+export const svgBack = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`;
 
 // FORMATADOR DE TEMPO DE SESSÃO EM TEMPO REAL
 export const formatElapsed = (totalSeconds) => {
@@ -551,16 +560,16 @@ export const getRelativeStrengthStatus = (feed = [], bodyWeight = 75) => {
 
         if (maxWeight > 0) {
             if (ratio >= lift.ratioElite) {
-                level = "🏆 Elite Esportiva";
+                level = "Elite Esportiva";
                 color = "#d4af37";
             } else if (ratio >= lift.ratioAdv) {
-                level = "🟢 Avançado";
+                level = "Avançado";
                 color = "#10b981";
             } else if (ratio >= lift.ratioInt) {
-                level = "🔵 Intermediário";
+                level = "Intermediário";
                 color = "#3b82f6";
             } else {
-                level = "🟡 Iniciante";
+                level = "Iniciante";
                 color = "#f59e0b";
             }
         }
@@ -592,16 +601,16 @@ export const generateWorkoutSummary = (userData, activeSession, sessionElapsed =
     const totalVol = lastItems.reduce((acc, curr) => acc + ((curr.weight || 0) * (curr.reps || 0)), 0);
     const prsHit = lastItems.filter(i => i.isPR).map(i => i.name);
 
-    let text = `🔥 *LIGA DO FERRO - RESUMO DE TREINO* 🟢\n`;
-    text += `👤 Atleta: *${name}* | Treino #${workoutsCount}\n`;
-    text += `⏱️ Duração: *${durationStr}* | 📦 Volume Recente: *${totalVol.toLocaleString('pt-BR')} kg*\n`;
+    let text = `LIGA DO FERRO - RESUMO DE TREINO\n`;
+    text += `Atleta: ${name} | Treino #${workoutsCount}\n`;
+    text += `Duração: ${durationStr} | Volume Recente: ${totalVol.toLocaleString('pt-BR')} kg\n`;
     
     if (prsHit.length > 0) {
-        text += `🏆 *NOVOS RECCORDES:* ${prsHit.join(', ')}!\n`;
+        text += `NOVOS RECORDES: ${prsHit.join(', ')}!\n`;
     }
     
-    text += `⚡ Nível e XP: *${xp} XP* acumulados na jornada!\n`;
-    text += `💪 #LigaDoFerro #Musculação #HighPerformance`;
+    text += `Nível e XP: ${xp} XP acumulados na jornada!\n`;
+    text += `#LigaDoFerro #Musculação #HighPerformance`;
 
     return text;
 };
@@ -609,10 +618,10 @@ export const generateWorkoutSummary = (userData, activeSession, sessionElapsed =
 // 8. FAROL DE SÉRIES EFETIVAS / ZONAS DE HIPERTROFIA
 export const getHypertrophyZoneInfo = (setsCount = 0) => {
     if (setsCount < 10) {
-        return { label: "🔴 Manutenção (<10 séries)", color: "#ef4444", status: "low" };
+        return { label: "Manutenção (<10 séries)", color: "#ef4444", status: "low" };
     } else if (setsCount <= 20) {
-        return { label: "🟢 Hipertrofia Ideal (10-20)", color: "#10b981", status: "optimal" };
+        return { label: "Hipertrofia Ideal (10-20)", color: "#10b981", status: "optimal" };
     } else {
-        return { label: "🟡 Volume Alto (>20 séries)", color: "#f59e0b", status: "high" };
+        return { label: "Volume Alto (>20 séries)", color: "#f59e0b", status: "high" };
     }
 };
