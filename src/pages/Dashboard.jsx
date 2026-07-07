@@ -39,7 +39,8 @@ const Dashboard = () => {
     return (
         <>
             <nav className="top-nav" id="top-nav">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <img src="/logoapp.png" alt="Liga do Ferro" style={{ height: '38px', width: '38px', objectFit: 'cover', borderRadius: '10px', boxShadow: '0 2px 10px rgba(134, 59, 255, 0.3)' }} />
                     <h1 className="logo">LIGA DO FERRO</h1>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>

@@ -1,6 +1,8 @@
+/* oxlint-disable react/only-export-components */
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import { formatElapsed } from '../data';
+import { formatElapsed, svgTarget, svgTrophy, svgFlame } from '../data';
 
 export const AuthContext = createContext();
 
@@ -38,7 +40,7 @@ export const AuthProvider = ({ children }) => {
                 setRestTimer(prev => {
                     if (!prev || !prev.active) return null;
                     if (prev.secondsLeft <= 1) {
-                        showNotification('⏱️ Descanso esgotado! Hora da próxima série!', 'success');
+                        showNotification('Descanso esgotado! Hora da próxima série!', 'success');
                         return null;
                     }
                     return { ...prev, secondsLeft: prev.secondsLeft - 1 };
@@ -193,7 +195,6 @@ export const AuthProvider = ({ children }) => {
     const syncData = async (newData) => {
         if (!activeUser) return;
         
-        const previousData = { ...userData };
         const updatedData = { ...userData, ...newData };
         setUserData(updatedData);
         
@@ -239,7 +240,7 @@ export const AuthProvider = ({ children }) => {
         };
         setActiveSession(newSession);
         localStorage.setItem('activeSession', JSON.stringify(newSession));
-        showNotification('🚀 Sessão de treino iniciada! Foco total!', 'success');
+        showNotification('Sessão de treino iniciada! Foco total!', 'success');
     };
 
     const endSession = () => {
@@ -315,7 +316,7 @@ export const AuthProvider = ({ children }) => {
                     <div className="modal-content reward-content" onClick={(e) => e.stopPropagation()}>
                         <button className="close-modal" onClick={() => setRewardModal(null)}>×</button>
                         <div className="reward-header">
-                            <span className="reward-icon">{rewardModal.isSessionEnd ? '🎯' : rewardModal.isPR ? '🏆' : '🔥'}</span>
+                            <span className="reward-icon" dangerouslySetInnerHTML={{ __html: rewardModal.isSessionEnd ? svgTarget : rewardModal.isPR ? svgTrophy : svgFlame }}></span>
                             <h2>{rewardModal.isSessionEnd ? 'TREINO CONCLUÍDO!' : rewardModal.isPR ? 'NOVO RECORDE PESSOAL!' : 'SÉRIE REGISTRADA!'}</h2>
                         </div>
                         <p className="reward-exercise">{rewardModal.exerciseName}</p>

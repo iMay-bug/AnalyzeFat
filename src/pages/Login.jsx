@@ -62,6 +62,7 @@ const Login = () => {
             <section id="view-auth" style={{ width: '100%', maxWidth: '400px', padding: '20px' }}>
                 <div className="auth-container">
                     <div className="auth-header-logo">
+                        <img src="/logoapp.png" alt="Liga do Ferro" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '20px', marginBottom: '14px', boxShadow: '0 8px 24px rgba(134, 59, 255, 0.4)', border: '1px solid rgba(255, 255, 255, 0.1)' }} />
                         <h1 className="auth-title">LIGA DO FERRO</h1>
                         <p className="auth-subtitle">CONTROLE DE TREINOS & EVOLUÇÃO</p>
                     </div>
